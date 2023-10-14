@@ -6,6 +6,7 @@ E-commerce app using typescript and commercejs library
  Features to implement
 
  - Loader when app is fetching data
+ - payment page and functinality with stripe
  - Error handling during fetch
  - Adding more products in commerce js site
  - Adding a BUY NOW functionality to navigate user to category when clicked on products section
