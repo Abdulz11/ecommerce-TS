@@ -9,20 +9,31 @@ function Footer() {
         <div className="footer-links">
             <ul>
                 <li>
-                    Home
+                    <a href="#">Home</a>
                 </li>
                 <li>
-                  About
+                 <a href="#categories">Categories</a>
                 </li>
                 <li>
-                    Products
+                   <a href="#products">Products</a>
                 </li>
             </ul>
         </div>
+
         <div className="footer-contact">
-            <span>Number</span>
-            <span>Email</span>
-            <span>Address</span>
+            <div>
+                <i className="bi-instagram" ></i>
+                <span>Instagram</span>
+            </div>
+            <div>
+                <i className="bi-twitter" ></i>
+                <span>Twitter</span>
+            </div>
+            <div>
+                <i className="bi-facebook" ></i>
+                <span>Facebook</span>
+            </div>
+           
         </div>
     </div>
   )

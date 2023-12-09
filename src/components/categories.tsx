@@ -6,9 +6,9 @@ function Categories() {
 //  const {checkIt} = useAppContext()
 //  console.log(checkIt)
   return (
-    <Container  >
+    <Container style={{marginTop:"100px"}} id="categories">
       <h2>Categories</h2>
-        <Row className='gy-5'>
+        <Row className='gy-5 pt-3'>
             <Col>
            <Card className='card-div'>
             <Card.Img src='https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fG1vZGVsJTIwaW4lMjBjbG90aGVzfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60'/>

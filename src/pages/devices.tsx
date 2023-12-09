@@ -9,14 +9,51 @@ import  { Rings } from 'react-loader-spinner'
 
 
 
+
 function Devices() {
   const{addToCart,checkIfAddedToCart,setPath} = useAppContext()
   let {pathname} = useLocation()
+  const [error,setError] = useState(false)
   const [deviceProducts,setDeviceProducts] = useState<Product[] | null>(null)
+
+  function getProducts(){
+    commerce.products.list({category_slug: ['devices'],}).then((product) =>{
+      setDeviceProducts(product.data)
+      setPath(pathname)}
+   )
+    .catch(()=>{
+      setError(true)
+    })
+  }
   useEffect(() => {
-    commerce.products.list({category_slug: ['devices'],}).then((product) =>setDeviceProducts(product.data));
-    setPath(pathname)
+    getProducts()
   }, [])
+
+  // IF AN ERROR OCCURS IN FETCHING PRODUCTS
+  if(error){
+    return(
+      <>
+      <Navbar/>
+      <div style={{display:'flex',justifyContent:'center',flexDirection:'column',alignItems:'center'}}>
+    <h2 style={{fontSize:'40px',margin:'100px 0px'}}>Oops, Something went wrong.</h2>
+    <button
+   onClick={getProducts}
+       style={{
+           width:'20%',
+           fontSize:"20px",
+           backgroundColor:'white',
+           color:'black',
+           border:'2px solid black',
+           }} 
+           className='btn-cart-banner' 
+          >Retry
+       </button>  
+    </div> 
+    </>
+    )
+  }
+
+  // IF NO ERROR IN FETCH
   return (
     <> 
     <Navbar/>
@@ -38,6 +75,7 @@ function Devices() {
                   id:item.id,
                   name:item.name,
                   image:item.image?.url,
+                  price:item.price.raw
                 })
               }}>{checkIfAddedToCart(item.id)? "Added to Cart":"Add to Cart"}</button>
            </Card.Body>  

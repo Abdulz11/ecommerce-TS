@@ -1,7 +1,9 @@
-
+import Products from "../components/products"
 function ProductsPage() {
   return (
-    <div>productspage goes here</div>
+    <div>
+      <Products/>
+    </div>
   )
 }
 
