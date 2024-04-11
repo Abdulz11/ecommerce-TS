@@ -8,9 +8,7 @@ export default function PaymentForm(){
     
     const {token,setFormStep,checkoutData,setCheckoutOrder,setCart,buttonLoader,setButtonLoader} = useAppContext()
     const navigate = useNavigate()
-     type ImageObj   = {url:string | null}
-     console.log(token)
-   
+    
 
     function handlePayment(){
         if(token){
