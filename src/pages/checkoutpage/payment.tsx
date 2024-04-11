@@ -6,8 +6,10 @@ import { Bars } from "react-loader-spinner";
 
 export default function PaymentForm(){
     
+    
     const {token,setFormStep,checkoutData,setCheckoutOrder,setCart,buttonLoader,setButtonLoader} = useAppContext()
     const navigate = useNavigate()
+  
     
 
     function handlePayment(){
@@ -63,8 +65,10 @@ export default function PaymentForm(){
                     return(
                         <div key={item.name} style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',backgroundColor:'darkgrey',padding:'0.3rem 2rem',margin:'1rem 0rem'}}>
                             <div style={{width:'165px'}}>
-                                <img src={item.image.url}
+                                <img src={item.image}
                                  alt="item image" />
+                                {/* <img src={item.image.url}
+                                 alt="item image" /> */}
                             </div>
                             <div>
                                 <h3 style={{color:'white',margin:'0 1rem'}}>{item.name}</h3>
@@ -117,7 +121,8 @@ export default function PaymentForm(){
                     wrapperStyle={{}}
                     wrapperClass=""
                     visible={true}
-        />          : `Pay ${token?.subtotal.formatted_with_symbol}`}
+        />          : `Pay ${token?.subtotal}`}
+        {/* />          : `Pay ${token?.subtotal.formatted_with_symbol}`} */}
                 </button> 
             </div>
          }
