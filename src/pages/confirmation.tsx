@@ -20,11 +20,11 @@ export default function Confirmation() {
   return (
     <div>
       <Navbar/>
-        <Container  style={{marginTop:'100px',textAlign:'center',boxShadow:'0px 2px 5px black'}}>
+        <Container  style={{marginTop:'140px',textAlign:'center',boxShadow:'0px 2px 5px black'}}>
             <h2 className="mb-4 mt-2 p-4" style={{fontSize:"34px"}}>Payment was successful!</h2>
             <h3 className="mb-3">Thank you for your purchase, {checkoutData.FirstName[0].toUpperCase() + checkoutData.FirstName.slice(1)} {checkoutData.LastName[0].toUpperCase() + checkoutData.LastName.slice(1)} </h3>
             <p style={{fontWeight:'600'}}>Customer Reference: {checkoutOrder?.customer_reference}</p>
-            <h4>Your item(s) should arrive in 5-infinity business days</h4>
+            <h4>Your item(s) should arrive in 5 to infinity business days</h4>
             <h5 style={{color:'red',marginBottom:'100px',marginTop:'100px'}}>*Disclaimer: Items may not arrive due to this being just a demo.</h5>
             <Link
               to="/"

@@ -7,6 +7,6 @@ Features to implement
 
 - Error handling during fetch
 - Adding more products in commerce js site
-- Searchbar functionality
+- Searchbar implementation and functionality
 <!-- styling -->
 - Images in caraousel

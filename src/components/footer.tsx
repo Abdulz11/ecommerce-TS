@@ -4,7 +4,7 @@ function Footer() {
   return (
     <div className="footer-div">
         <div className="footer-logo">
-            Shop & Drop
+            <span style={{backgroundColor:'black',color:'white'}}>S</span>hop & <span style={{backgroundColor:'black',color:'white'}}>D</span>rop
         </div>
         <div className="footer-links">
             <ul>

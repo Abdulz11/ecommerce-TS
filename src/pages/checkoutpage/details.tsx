@@ -6,18 +6,14 @@ import { FieldValues, useForm} from 'react-hook-form'
 import { Link } from "react-router-dom"
 
 export default function DetailsForm(){
-
-
     const {register, handleSubmit,formState:{errors}} = useForm()
     const {token,setCheckoutData,setFormStep} = useAppContext()
     const [shippingCountries,setShippingCountries] = useState<object>({})
     const [shippingCountryCode,setShippingCountryCode] = useState<string>('')
-
     const [shippingRegions,setShippingRegions] = useState<object>({})
     const [shippingRegionCode,setShippingRegionCode] = useState<string>('')
     const [shippingOption,setShippingOption] = useState<GetShippingOptionsResponse[]>([])
     
-console.log(errors)
     useEffect(() => {
             async function getShippingCountries() {
                 if(token){
@@ -25,7 +21,7 @@ console.log(errors)
                     setShippingCountries(response.countries)
                     let country = Object.entries(response.countries)[0]
                     setShippingCountryCode(country[0])
-                   console.log(shippingCountryCode)
+                  
                    
                 }
                 );
@@ -42,7 +38,7 @@ console.log(errors)
                 setShippingRegions(response.subdivisions)
                 let subdivision = Object.entries(response.subdivisions)[0]
                 setShippingRegionCode(subdivision[0])
-                console.log(shippingCountryCode)
+               
                });
                
             }
@@ -60,22 +56,23 @@ console.log(errors)
                    
                   }).then(options =>{
                     setShippingOption(options)
-                    console.log('shipping options',options)
+                   
                 });
             }
             getShippingOptions()
+            
     
     }, [shippingRegionCode])
-    console.log('this is the ship options',shippingOption)
 
     function submitUserData(data:FieldValues){
         if(shippingOption.length !== 0){
             let newData = {...data,ShippingOption:shippingOption,ShippingCountry:shippingCountryCode,ShippingRegion:shippingRegionCode}
-            // console.log(newData)
+           
             setCheckoutData(newData)
             setFormStep(prev=>prev + 1)
         }
     }
+   
     return (
         <form onSubmit={handleSubmit((data)=>submitUserData(data))}>
         <h2 style={{textAlign:"center"}}>Details</h2>
@@ -151,20 +148,20 @@ console.log(errors)
                     </div>
                 </div>  
       </div>
-      <div  style={{display:'flex',justifyContent:'center',columnGap:'50px',marginTop:'3rem'}}>
+      <div  style={{display:'flex',justifyContent:'center',columnGap:'50px',margin:'3rem',}}>
             <Link 
             style={{
-                width:'20%',
-                fontSize:"20px",
+                // width:'20%',
                 backgroundColor:'white',
                 color:'black',
                 border:'2px solid black',}} 
             className='btn-cart-banner' to="/cart" >Back to Cart</Link> 
             <button type="submit"
-            style={{width:'20%',fontSize:"20px"}} 
+            // style={{width:'20%',}} 
             className='btn-cart-banner'>Proceed to Payment</button> 
         </div>
    </form>
       
     )
+   
 }

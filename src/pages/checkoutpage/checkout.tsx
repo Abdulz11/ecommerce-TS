@@ -18,8 +18,8 @@ export default function Checkout() {
  
   return (
     <>
-        <div style={{textAlign:'center',marginBottom:'5rem'}}>
-        <h1>Shop & Drop</h1>
+        <div style={{textAlign:'center',marginBottom:'5rem',marginTop:'10px'}}>
+        <h1><span style={{color:'white',backgroundColor:'black',fontSize:'3rem'}}>S</span>hop & <span style={{color:'white',backgroundColor:'black',fontSize:'2.5rem'}}>D</span>rop</h1>
         </div>
         { formStep == 1 && <DetailsForm /> }
         { formStep == 2 && <PaymentForm/> }

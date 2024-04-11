@@ -4,7 +4,7 @@ import {commerce} from'../lib/commerce'
 import { Product } from "@chec/commerce.js/types/product"
 import Navbar from "../components/navbar"
 import { useAppContext } from "../context/appcontext"
-import { useLocation,Link } from "react-router-dom"
+import { useLocation} from "react-router-dom"
 import { Rings } from "react-loader-spinner"
 
 

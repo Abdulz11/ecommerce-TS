@@ -27,7 +27,7 @@ export default function Cart() {
   return (
     <>
     <Navbar/>
-     <Link to={`${path}`} className="back-link" style={{margin:'35px',fontSize:"18px"}}><i className='bi-chevron-left'></i>{'  '}Go Back
+     <Link to={`${path}`} className="back-link" style={{margin:'35px',fontSize:"18px",color:path === '' ? 'grey': 'black'}}><i className='bi-chevron-left'></i>{'  '}Go Back
      </Link> 
     <div className="cart-container">
       <div style={{display:'flex',justifyContent:'space-between',width:'90vw',alignItems:'center',}}>
@@ -50,7 +50,7 @@ export default function Cart() {
       </div>}
       </div>
       
-      <div className={cart.length? "grid-cart": "no-item-div"}>
+      <div style={{margin:"60px auto"}}className={cart.length? "grid-cart": "no-item-div"}>
         {(cart.length) ? cart.map((item)=>{
           return(
             <div key={item.id}>

@@ -8,6 +8,8 @@ export default function PaymentForm(){
     
     const {token,setFormStep,checkoutData,setCheckoutOrder,setCart,buttonLoader,setButtonLoader} = useAppContext()
     const navigate = useNavigate()
+     type ImageObj   = {url:string | null}
+     console.log(token)
    
 
     function handlePayment(){
@@ -61,15 +63,16 @@ export default function PaymentForm(){
             <div>
                 {token.line_items.map((item)=>{
                     return(
-                        <div key={item.name} style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',backgroundColor:'darkgrey',padding:'0.3rem 2rem',margin:'1rem 0'}}>
+                        <div key={item.name} style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',backgroundColor:'darkgrey',padding:'0.3rem 2rem',margin:'1rem 0rem'}}>
                             <div style={{width:'165px'}}>
-                                <img src={item.image?.url} alt="item image" />
+                                <img src={item.image.url}
+                                 alt="item image" />
                             </div>
                             <div>
-                                <h3 style={{color:'white'}}>{item.name}</h3>
+                                <h3 style={{color:'white',margin:'0 1rem'}}>{item.name}</h3>
                                 <p style={{fontWeight:'bold',color:'white'}}>Qt: 1</p>
                             </div>
-                            <h5 style={{fontSize:'28px',color:'white',}}>{item.price.formatted_with_symbol}</h5>
+                            <h5 style={{fontSize:'25px',color:'white',}}>{item.price.formatted_with_symbol}</h5>
                         </div>
 
                     )
@@ -87,25 +90,28 @@ export default function PaymentForm(){
                 color:'black',
                 border:'2px solid black',
                 }} 
-                className='btn-cart-banner' 
+                className=' btn-cart-banner' 
                 onClick={()=>setFormStep(prev=>prev - 1)}>Back
             </button> 
          </div> }
         {/* buttons */}
+        
         {token &&  
             <div  style={{display:'flex',justifyContent:'center',columnGap:'50px'}}>
                 <button
                 style={{
-                    width:'20%',
+                   
                     fontSize:"20px",
                     backgroundColor:'white',
                     color:'black',
                     border:'2px solid black',}} 
-                    className='btn-cart-banner' 
+                    className='pay btn-cart-banner' 
                     onClick={()=>setFormStep(prev=>prev - 1)}>Back</button> 
                 <button
-                style={{width:'20%',fontSize:"20px"}} 
-                className='btn-cart-banner' onClick={handlePayment}>{buttonLoader ? <Bars
+                style={{fontSize:"20px"}} 
+                className='pay btn-cart-banner' onClick={handlePayment}>
+                    {buttonLoader ? 
+                    <Bars
                     height="34"
                     width="249"
                     color="grey"
@@ -113,7 +119,7 @@ export default function PaymentForm(){
                     wrapperStyle={{}}
                     wrapperClass=""
                     visible={true}
-        /> : `Pay ${token?.subtotal?.formatted_with_symbol}`}
+        />          : `Pay ${token?.subtotal.formatted_with_symbol}`}
                 </button> 
             </div>
          }
