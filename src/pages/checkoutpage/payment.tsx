@@ -65,7 +65,7 @@ export default function PaymentForm(){
                     return(
                         <div key={item.name} style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',backgroundColor:'darkgrey',padding:'0.3rem 2rem',margin:'1rem 0rem'}}>
                             <div style={{width:'165px'}}>
-                            // @ts-ignore
+                             {/* @ts-ignore  */}
                                 <img src={item.image?.url}
                                  alt="item image" />
                             </div>

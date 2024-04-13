@@ -6,7 +6,7 @@ import { FieldValues, useForm} from 'react-hook-form'
 import { Link } from "react-router-dom"
 
 export default function DetailsForm(){
-    const {register, handleSubmit,formState:{errors}} = useForm()
+    const {register, handleSubmit} = useForm()
     const {token,setCheckoutData,setFormStep} = useAppContext()
     const [shippingCountries,setShippingCountries] = useState<object>({})
     const [shippingCountryCode,setShippingCountryCode] = useState<string>('')
