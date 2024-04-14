@@ -35,7 +35,7 @@ function Products(){
   }
 
   let randomNumArray = useMemo(() =>makeRandomNumberArray(), [])
-  console.log(randomNumArray)
+  
 
   
 
