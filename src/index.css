@@ -525,11 +525,22 @@ span {
     grid-template-columns: repeat(3, 200px);
     column-gap: 3rem;
   }
+  .grid-products {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 @media (max-width: 700px) {
   .overall-product-div {
     grid-template-columns: repeat(2, 200px);
     column-gap: 6rem;
+  }
+  .grid-products {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+@media (1300px > width > 1000px) {
+  .grid-products {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
