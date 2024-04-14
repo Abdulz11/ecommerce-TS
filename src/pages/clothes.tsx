@@ -64,6 +64,8 @@ export default function Clothes() {
                 {cloth.description.slice(3).slice(0,-4)}
               </div> 
               <button 
+              
+              className='button-hover'
                   onClick={()=>{
                     addToCart(cloth.id,{
                     id:cloth.id,

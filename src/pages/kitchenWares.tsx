@@ -68,7 +68,7 @@ function KitchenWares() {
             <div className="card-product-text">
               {item.description.slice(3).slice(0,-4)}
             </div> 
-            <button onClick={()=>{
+            <button className='button-hover' onClick={()=>{
                 addToCart(item.id,{
                   id:item.id,
                   name:item.name,
