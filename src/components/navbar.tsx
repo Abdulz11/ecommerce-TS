@@ -1,39 +1,46 @@
-import { Nav } from "react-bootstrap"
-import { Link } from 'react-router-dom'
-import { useAppContext } from "../context/appcontext"
-import {cartImage} from '../assets/images/cartImage'
+import { Nav } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { useAppContext } from "../context/appcontext";
+import { cartImage } from "../assets/images/cartImage";
+import Logo from "./logo";
+import styles from "./navbar.module.css";
+import SideNavbar from "./sideNavbar";
+import NavList from "./navList";
+import { useEffect, useState } from "react";
 
 function Navbar() {
-  const {cart} = useAppContext()
-  // serach for item
+  const { cart } = useAppContext();
+  const [mobileScreen, setMobileScreen] = useState(window.innerWidth < 500);
 
-  
-// commerce.products.list({
-//   query: 'bag',
-// }).then(response => response.data);
+  useEffect(() => {
+    const handleResize = () => {
+      setMobileScreen(window.innerWidth < 500);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-   <Nav  className='justify-content-between align-items-center container p-2 mt-3'>
-       {/* <div className="input-div">
-     
-        <input type="text" name='searchbar' placeholder="search" />
-       </div> */}
-       <div>
-        <h1><span style={{color:'white',backgroundColor:'black',fontSize:'3rem'}}>S</span>hop & <span style={{color:'white',backgroundColor:'black',fontSize:'2.5rem'}}>D</span>rop</h1>
-       </div>
-       <div className="link-div">
-       <Link to='/'>Home</Link>
-        <a href="#">Sign-in</a>
-        
-        <Link to='/cart'>
-          <div className='cart-div'>
-         <img src={cartImage} alt="shopping cart" />
-         {cart.length == 0 ? "": <span>{cart.length}</span>}
-          </div>
-          </Link>
-       </div>
-   </Nav>
-       
-  )
+    <Nav className={`container p-2 mt-3 ${styles.navRoot} `}>
+      <Logo />
+      {mobileScreen ? <SideNavbar /> : <NavList />}
+      <Link to='/cart' className={styles.navLink}>
+        {/* cart */}
+        {/* <div className={styles.cartDiv}>
+          <img
+            src={cartImage}
+            alt='shopping cart'
+            className={styles.cartImage}
+          />
+          {cart.length > 0 ? (
+            <span className={styles.cartBadge}>{cart.length}</span>
+          ) : null}
+        </div> */}
+      </Link>
+    </Nav>
+  );
 }
 
-export default Navbar
+export default Navbar;

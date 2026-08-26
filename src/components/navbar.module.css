@@ -1,0 +1,90 @@
+.navRoot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: nowrap;
+}
+
+.linkDiv {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.navLink:hover,
+.navLink:focus {
+  color: #000000;
+}
+
+.navLink {
+  color: #212529;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font: inherit;
+}
+
+.cartDiv {
+  position: relative;
+}
+
+.cartImage {
+  width: 50px;
+}
+
+.cartBadge {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  top: -8px;
+  right: -18px;
+  padding: 10px;
+  background-color: blue;
+  color: white;
+  border-radius: 50%;
+}
+
+.userBadgeGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.userAvatar {
+  width: 34px;
+  height: 34px;
+  font-size: 12px;
+  border-radius: 50%;
+}
+
+.logoutButton {
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .cartDiv {
+    margin-right: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  /* .linkDiv { */
+  /* justify-content: flex-start; */
+  /* width: 100%; */
+  /* gap: 0.75rem; */
+  /* } */
+
+  .navLink {
+    font-size: 1rem;
+  }
+}

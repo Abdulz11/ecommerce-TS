@@ -63,17 +63,17 @@ export default function PaymentForm(){
             <div>
                 {token.line_items.map((item)=>{
                     return(
-                        <div key={item.name} style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',backgroundColor:'darkgrey',padding:'0.3rem 2rem',margin:'1rem 0rem'}}>
-                            <div style={{width:'165px'}}>
+                        <div key={item.name} className='payment-container'>
+                            <div className="image-div">
                              {/* @ts-ignore  */}
                                 <img src={item.image?.url}
                                  alt="item image" />
                             </div>
-                            <div>
+                            <div className="payment-item-desc">
                                 <h3 style={{color:'white',margin:'0 1rem'}}>{item.name}</h3>
                                 <p style={{fontWeight:'bold',color:'white'}}>Qt: 1</p>
                             </div>
-                            <h5 style={{fontSize:'25px',color:'white',}}>{item.price.formatted_with_symbol}</h5>
+                            <h5 className="payment-price">{item.price.formatted_with_symbol}</h5>
                         </div>
 
                     )

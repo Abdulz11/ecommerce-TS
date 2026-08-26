@@ -1,91 +1,161 @@
-import {Container} from 'react-bootstrap'
-import { useEffect,useMemo,useState} from 'react';
-import { useAppContext} from '../context/appcontext';
-import {commerce} from '../lib/commerce'
-import { Product } from '@chec/commerce.js/types/product';
-import { useNavigate } from 'react-router-dom';
+import { Container, Spinner } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./products.module.css";
 
+export type ProductDetail = {
+  id: string;
+  name: string;
+  description: string;
+  imageUrls: string[];
+  imageIds: string[];
+  category: string;
+  tag: string[];
+  price: number;
+  currency: string;
+  quantity: number;
+  storeId: string;
+  createdAt: Date;
+};
 
+function Products() {
+  const [products, setProducts] = useState<ProductDetail[]>([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-function Products(){
-  const [products,setProducts] = useState<Product[]>([])
-  const navigate = useNavigate()
-  const {addToCart,checkIfAddedToCart} = useAppContext()
- 
-  
- 
   useEffect(() => {
-   commerce.products.list().then(response => {
-    selectProduct(response.data)})
-  }
-  ,[])
+    setLoading(true);
+    fetch("http://localhost:3000/products")
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(() => {
+        setProducts([]);
+        setLoading(false);
+      });
+  }, []);
 
-  function makeRandomNumberArray():number[]{
-    let numArr:number[] = [] 
-    for(let i=0;i < 8;i++){
-      let randomNumber = Math.floor(Math.random() * 9)
-      if(numArr.includes(randomNumber)){
-        i--
-        continue
-      }
-      numArr[i] = randomNumber
+  const handleViewProduct = (productId: string) => {
+    navigate(`/products/${productId}`);
+  };
 
-    }
-    return numArr
-  }
-
-  let randomNumArray = useMemo(() =>makeRandomNumberArray(), [])
-  
-
-  
-
- function selectProduct(productArray:Product[]){
-  let newArray:Product[]=[]
-  randomNumArray.map(number=>{
-    productArray.map((objItems,index)=>{
-    if(number === index){
-        newArray.push(objItems)
-    }
-   })
- })
- setProducts(newArray)
- 
-}
-
-
-function goToCategory(route:string){
-  navigate(`${route}`)
-}
+  const getInStockStatus = (quantity?: number) => {
+    if (!quantity) return { text: "In Stock", className: "" };
+    if (quantity > 10) return { text: "In Stock", className: "" };
+    if (quantity > 0)
+      return { text: `${quantity} Left`, className: "lowStock" };
+    return { text: "Out of Stock", className: "lowStock" };
+  };
 
   return (
-      <Container  style={{marginTop:"150px"}} id='products'>
-        <h2 style={{marginBottom:'-60px'}}>Products</h2>
-          <div  className='overall-product-div' style={{borderTop:"2px solid grey",borderBottom: products.length > 0 ? "2px solid grey" : ''}}>
-          {products.length > 0 && products.map(item=>
-            <div key={item.id} className='products-div'>
-              <div className='product-img-div'>
-                <img src={item.image?.url} alt="image of products" />
-              </div>
-              <div className='img-overlay'>
-                <button onClick={()=>goToCategory(item.categories[0].slug)}><i className="bi-list-nested fa-6x" style={{fontSize:"30px",fontWeight:'bold'}}></i></button>
-               <div>....</div>
-                <button onClick={()=>{
-                    addToCart(item.id,{
-                    id:item.id,
-                    name:item.name,
-                    image:item.image?.url,
-                    price:item.price.raw
-                  })
-                }}><i className={checkIfAddedToCart(item.id) ? 'bi-cart-x':'bi-cart'} style={{fontSize:"30px"}}></i></button>
-              </div>
-            </div> )
-          } 
-        </div> 
-      </Container>
-   
+    <Container className={styles.productsSection} id='products'>
+      <h2 className={styles.sectionTitle}>Featured Products</h2>
 
-  )
+      {loading ? (
+        <div className={styles.loadingGrid}>
+          <Spinner animation='border' role='status'>
+            <span className='visually-hidden'>Loading products...</span>
+          </Spinner>
+        </div>
+      ) : products.length === 0 ? (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyStateIcon}>📦</div>
+          <p>No products available at the moment.</p>
+        </div>
+      ) : (
+        <div className={styles.productGrid}>
+          {products.map((product) => {
+            const stockStatus = getInStockStatus(product.quantity);
+            const price = product.price ?? 0;
+            const categoryName = product.category || "Featured";
+
+            return (
+              <div key={product.id} className={styles.productCard}>
+                <div className={styles.productImageWrapper}>
+                  <img
+                    src={
+                      product.imageUrls?.[0] ||
+                      "https://via.placeholder.com/260x220?text=No+Image"
+                    }
+                    alt={product.name}
+                    className={styles.productImage}
+                  />
+                  <div className={styles.productOverlay}>
+                    <button
+                      className={styles.overlayButton}
+                      onClick={() => handleViewProduct(product?.id)}
+                      title='View details'
+                    >
+                      👁️
+                    </button>
+                    <button
+                      className={styles.overlayButton}
+                      onClick={() => console.log(product)}
+                      title='Add to cart'
+                    >
+                      🛒
+                    </button>
+                  </div>
+                </div>
+
+                <div className={styles.productContent}>
+                  <h6 className={styles.productName}>{product?.name}</h6>
+
+                  <span className={styles.storeInfo}>
+                    {product.tag?.length ? `${product.tag[0]}` : "Premium"}
+                  </span>
+
+                  <div className={styles.priceRow}>
+                    <span className={styles.productPrice}>
+                      <span className={styles.productCurrency}>$</span>
+                      {price.toFixed(2)}
+                    </span>
+                    <span
+                      className={`${styles.quantityBadge} ${styles[stockStatus.className]}`}
+                    >
+                      {stockStatus.text}
+                    </span>
+                  </div>
+
+                  <div className={styles.productMeta}>
+                    <span className={styles.categoryTag}>{categoryName}</span>
+                    {product.quantity && (
+                      <span className={styles.metaItem}>
+                        📦 {product.quantity}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className={styles.actionsContainer}>
+                    <button
+                      // className={
+                      //   checkIfAddedToCart(product.id)
+                      //     ? `${styles.productButton} ${styles.savedButton}`
+                      //     : `${styles.productButton} ${styles.primaryButton}`
+                      // }
+                      onClick={() =>
+                        console.log(`${product.id} removed from cart`)
+                      }
+                    >
+                      Add
+                    </button>
+                    <button
+                      className={`${styles.productButton} ${styles.secondaryButton}`}
+                      onClick={() => handleViewProduct(product.id)}
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </Container>
+  );
 }
 
-
-export default Products
+export default Products;

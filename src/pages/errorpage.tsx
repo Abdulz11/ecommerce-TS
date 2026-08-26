@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 export default function Errorpage() {
   return (
     <div style={{display:'flex',justifyContent:'center',flexDirection:'column',alignItems:'center'}}>
-    <h2 style={{fontSize:'40px',margin:'100px 0px'}}>Oops, Something went wrong.</h2>
+    <h2 className='error-mess'>Oops, Something went wrong.</h2>
     <Link
     to="/"
        style={{

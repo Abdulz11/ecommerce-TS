@@ -1,28 +1,31 @@
 {
-  "name": "ecommerce-site",
+  "name": "Shop and Drop",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "test": "vitest",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
     "@chec/commerce.js": "^2.8.0",
-    "@stripe/react-stripe-js": "^2.1.1",
-    "@stripe/stripe-js": "^1.54.0",
     "@vercel/speed-insights": "^1.0.10",
     "bootstrap": "^5.3.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.4",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.47.0",
+    "react-icons": "^5.7.0",
     "react-loader-spinner": "^5.4.5",
     "react-router-dom": "^6.13.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.5",
+    "@testing-library/react": "^15.0.7",
+    "@testing-library/user-event": "^14.5.2",
     "@types/chec__commerce.js": "^2.8.6",
     "@types/node": "^20.8.9",
     "@types/react": "^18.0.37",
@@ -33,7 +36,9 @@
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "jsdom": "^24.0.0",
     "typescript": "^5.0.2",
-    "vite": "^4.3.9"
+    "vite": "^4.3.9",
+    "vitest": "^1.6.0"
   }
 }
