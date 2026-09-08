@@ -1,11 +1,13 @@
 import styles from "./navbar.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/authContext";
 import { cartImage } from "../assets/images/cartImage";
 import { useAppContext } from "../context/appcontext";
 
 export default function NavList() {
   const { cart } = useAppContext();
+  const navigate = useNavigate();
+  console.log(navigate);
   const { accessToken, userInfo, setAccessToken } = useAuthContext();
   const userName = userInfo?.name || "User";
   const initials = userName
@@ -25,7 +27,7 @@ export default function NavList() {
       // Remove frontend access token
       localStorage.removeItem("accessToken");
       setAccessToken("");
-
+      navigate("/");
       // Update React state too
     } catch (error) {
       console.error("Logout failed:", error);
@@ -62,7 +64,7 @@ export default function NavList() {
             </span>
           </div>
         )}
-        {accessToken && userInfo.role == "STORE" && (
+        {accessToken && userInfo?.role == "STORE" && (
           <Link to='/upload' className={styles.navLink}>
             Upload
           </Link>

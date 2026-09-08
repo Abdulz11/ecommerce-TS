@@ -13,7 +13,7 @@ const Beauty =
 
 const imagesArray = [Clothing, Electronics, HomeAndKitchen, Beauty];
 
-function Categories() {
+function AllCategoriesPage() {
   const [categories, setCategories] = useState<
     { category: string; image: string }[]
   >([]);
@@ -29,7 +29,6 @@ function Categories() {
         setCategories(categoriesArray);
       });
   }, []);
-
   return (
     <Container style={{ marginTop: "100px" }} id='categories'>
       <h2>Categories</h2>
@@ -60,16 +59,9 @@ function Categories() {
             </Card>
           </Col>
         ))}
-        {categories.length > 3 && (
-          <Col xs={12} className='text-center mt-4'>
-            <Link to='/categories' className='btn btn-cart-banner'>
-              View All Categories
-            </Link>
-          </Col>
-        )}
       </Row>
     </Container>
   );
 }
 
-export default Categories;
+export default AllCategoriesPage;

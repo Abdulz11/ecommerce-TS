@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/appcontext";
 import { useAuthContext } from "../context/authContext";
 import { cartImage } from "../assets/images/cartImage";
@@ -8,6 +8,7 @@ import { FaBars, FaTimes } from "react-icons/fa";
 
 function SideNavbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const { cart } = useAppContext();
   const { accessToken, userInfo, setAccessToken } = useAuthContext();
   const userName = userInfo?.name || "User";
@@ -28,6 +29,7 @@ function SideNavbar() {
       localStorage.removeItem("accessToken");
       setAccessToken("");
       setIsOpen(false);
+      navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -92,7 +94,7 @@ function SideNavbar() {
             </Link>
           )}
 
-          {accessToken && userInfo.role === "STORE" && (
+          {accessToken && userInfo?.role === "STORE" && (
             <Link
               to='/upload'
               className={styles.navLink}

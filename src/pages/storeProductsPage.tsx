@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../context/appcontext";
-import { FaArrowLeft, FaChevronRight, FaWhatsapp } from "react-icons/fa";
+import { FaArrowLeft, FaChevronRight } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa";
 import {
   Alert,
@@ -13,28 +13,8 @@ import {
   Spinner,
 } from "react-bootstrap";
 import styles from "./productspage.module.css";
-import { ProfileData } from "../types";
-
-type ProductDetail = {
-  id: string;
-  name: string;
-  description: string;
-  imageUrls?: string[];
-  store: {
-    name: string;
-    whatsapp: string | null | undefined;
-  };
-  price?: number | { raw: number; formatted_with_symbol?: string };
-  currency?: string;
-  quantity?: number;
-  subCategory: {
-    name: string;
-    category: {
-      name: string;
-    };
-  };
-  tag?: string[];
-};
+import { useAuthContext } from "../context/authContext";
+import { ProductDetail } from "../types";
 
 const dummyProduct: ProductDetail = {
   id: "demo-123",
@@ -44,10 +24,6 @@ const dummyProduct: ProductDetail = {
   imageUrls: [
     "https://images.unsplash.com/photo-1526178617479-1a9f5d6c8928?auto=format&fit=crop&w=1200&q=80",
   ],
-  store: {
-    name: "Horizon Audio",
-    whatsapp: "+2348012345678",
-  },
   price: {
     raw: 129.99,
     formatted_with_symbol: "$129.99",
@@ -63,24 +39,11 @@ const dummyProduct: ProductDetail = {
   tag: ["Portable", "Bluetooth", "Water-resistant", "12h Battery"],
 };
 
-const whatsappMessage = (product: ProductDetail) => {
-  if (
-    product?.store?.whatsapp === undefined ||
-    product?.store?.whatsapp === null ||
-    product?.store?.whatsapp === ""
-  ) {
-    return "#";
-  }
-  const message = `Hello, I'm interested in buying ${product.name} of ${product.currency} ${product.price}. Is it still available?`;
-
-  return `https://wa.me/${product.store.whatsapp}?text=${encodeURIComponent(message)}`;
-};
-
-export default function ProductsPage() {
-  const { productId } = useParams();
+export default function StoreProductsPage() {
+  const { storeId, productId } = useParams();
 
   const navigate = useNavigate();
-  const { addToCart, checkIfAddedToCart } = useAppContext();
+  const { accessToken } = useAuthContext();
 
   const [product, setProduct] = useState<ProductDetail | null>(dummyProduct);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -108,13 +71,19 @@ export default function ProductsPage() {
 
       try {
         const response = await fetch(
-          `http://localhost:3000/products/${productId}`,
+          `http://localhost:3000/products/store_products/${storeId}/${productId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
         );
         if (!response.ok) {
           throw new Error("Unable to load product.");
         }
         const data = await response.json();
-        setProduct(data.data);
+        setProduct(data.data || null);
       } catch (err) {
         setError(
           err instanceof Error
@@ -127,7 +96,7 @@ export default function ProductsPage() {
     }
 
     fetchProduct();
-  }, []);
+  }, [productId]);
 
   const currentImage = imageUrls[activeImageIndex] ?? imageUrls[0];
 
@@ -163,7 +132,9 @@ export default function ProductsPage() {
           className={`${styles.backButton} p-0`}
           onClick={() => navigate(-1)}
         >
-          <FaArrowLeft /> Back to catalog
+          <div>
+            <FaArrowLeft /> Back to Store Products
+          </div>
         </Button>
       </div>
 
@@ -229,14 +200,13 @@ export default function ProductsPage() {
                   <h1 className={styles.productTitle}>{product.name}</h1>
                   <div className={styles.metaBadges}>
                     <Badge bg='primary' className={styles.metaBadge}>
-                      {product.subCategory.name ?? "Featured"}
+                      {product.subCategory?.name}
                     </Badge>
                     <Badge bg='secondary' className={styles.metaBadge}>
                       {product.quantity ?? 0} in stock
                     </Badge>
                   </div>
                 </div>
-                {product.subCategory?.name}
                 <div className={styles.priceTag}>
                   {formattedPrice} this price{" "}
                 </div>
@@ -248,71 +218,28 @@ export default function ProductsPage() {
                 <div className={styles.productStat}>
                   <span className={styles.productStatTitle}>Category</span>
                   <span className={styles.productStatValue}>
-                    {product.subCategory.category.name ?? "General"}
+                    {product.subCategory?.category?.name ?? "General"}
                   </span>
                 </div>
               </div>
 
               <div className={styles.actionsRow}>
                 <Button
-                  variant={
-                    checkIfAddedToCart(product.id) ? "success" : "primary"
-                  }
+                  variant='primary'
                   onClick={() =>
-                    addToCart(product.id, {
-                      id: product.id,
-                      name: product.name,
-                      image: currentImage,
-                      price:
-                        typeof product.price === "number"
-                          ? product.price
-                          : productPrice,
-                    })
+                    navigate(`/products/edit_product/${product.id}`)
                   }
-                  disabled={checkIfAddedToCart(product.id)}
                 >
-                  {checkIfAddedToCart(product.id)
-                    ? "Saved to cart"
-                    : "Add to cart"}
+                  Edit
                 </Button>
-                {/* <Button
+                <Button
                   variant='outline-secondary'
                   onClick={() =>
                     window.scrollTo({ top: 0, behavior: "smooth" })
                   }
                 >
                   View details
-                </Button> */}
-                {product?.store?.whatsapp ? (
-                  <>
-                    <Button
-                      variant='outline-secondary'
-                      onClick={() =>
-                        window.scrollTo({ top: 0, behavior: "smooth" })
-                      }
-                    >
-                      <a
-                        href={whatsappMessage(product)}
-                        target='_blank'
-                        rel='noreferrer'
-                      >
-                        <FaWhatsapp color='green' size={30} />
-                      </a>
-                    </Button>
-                    <small
-                      style={{
-                        color: "gray",
-                        margin: "auto",
-
-                        fontSize: "12px",
-                      }}
-                    >
-                      Contact seller about product
-                    </small>
-                  </>
-                ) : (
-                  <p>Seller does not have whatsapp contact</p>
-                )}
+                </Button>
               </div>
 
               {product.tag?.length ? (

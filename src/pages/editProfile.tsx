@@ -1,8 +1,11 @@
 import { FieldValues, useForm } from "react-hook-form";
-import { useAuthContext } from "../context/authContext";
-import { useState, useEffect } from "react";
+import { useAuthContext, UserInfo } from "../context/authContext";
+import { Spinner } from "react-bootstrap";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./SignIn.module.css";
+import { FaTimes } from "react-icons/fa";
+import { ProfileData } from "../types";
 
 type responseObject = {
   error: string | null | boolean;
@@ -12,21 +15,20 @@ type responseObject = {
   loading: boolean;
 };
 
-type ProfileData = {
-  id: string;
-  name: string;
-  img?: string;
-  email?: string;
-  whatsapp: string;
-  location: string;
-  description: string;
+const Loader = () => {
+  return (
+    <Spinner animation='border' role='status'>
+      <span className='visually-hidden'>Loading products...</span>
+    </Spinner>
+  );
 };
-
 export default function EditProfile() {
   const { register, handleSubmit, reset } = useForm();
-  const { userInfo, setUserInfo } = useAuthContext();
+
+  const { userInfo, setUserInfo, accessToken } = useAuthContext();
   const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [storeInfo, setStoreInfo] = useState<ProfileData | null>(null);
 
@@ -40,6 +42,10 @@ export default function EditProfile() {
   const [modal, setModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
 
+  // image input ref
+
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+
   // Load current user data into form
   useEffect(() => {
     const fetchStoreInfo = async () => {
@@ -47,10 +53,15 @@ export default function EditProfile() {
       setResponse((prev) => ({ ...prev, error: false, message: null }));
       try {
         const response = await fetch(
-          `http://localhost:3000/store/store_info/${userInfo.id}`,
+          `http://localhost:3000/store/store_info/${userInfo?.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
         );
         const data = await response.json();
-        setStoreInfo(data);
+        setStoreInfo(data.data);
       } catch (error) {
         console.error("Error fetching products:", error);
         setResponse((prev) => ({ ...prev, error: true }));
@@ -58,6 +69,10 @@ export default function EditProfile() {
         setResponse((prev) => ({ ...prev, loading: false }));
       }
     };
+    fetchStoreInfo();
+  }, []);
+
+  useEffect(() => {
     if (storeInfo) {
       reset({
         name: storeInfo.name || "",
@@ -73,13 +88,26 @@ export default function EditProfile() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (file) {
       setImageFile(file);
       const reader = new FileReader();
+
+      reader.onloadstart = () => setImageLoading(true);
       reader.onloadend = () => {
+        setImageLoading(false);
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDeleteImage = () => {
+    if (imageInputRef.current?.value) {
+      imageInputRef.current.value = "";
+      setImageLoading(false);
+      setImageFile(null);
+      setImagePreview(null);
     }
   };
 
@@ -98,9 +126,12 @@ export default function EditProfile() {
       }
 
       const res = await fetch(
-        `http://localhost:3000/user/edit_profile/${userInfo.id}`,
+        `http://localhost:3000/store/edit_profile/${userInfo?.id}`,
         {
           method: "PUT",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
           body: formDataToSend,
           credentials: "include",
         },
@@ -121,8 +152,8 @@ export default function EditProfile() {
       }
 
       // Update user info in context
-      setUserInfo(data?.data?.user);
-      sessionStorage.setItem("userInfo", JSON.stringify(data?.data?.user));
+      setUserInfo((prev) => ({ ...prev, name: data?.data }) as UserInfo);
+      sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
 
       setResponse((prev) => ({
         ...prev,
@@ -244,7 +275,7 @@ export default function EditProfile() {
               type='text'
               className='form-control'
               disabled={response.loading}
-              placeholder='City, Country'
+              placeholder='City'
               {...register("location", {
                 required: "Location is required",
               })}
@@ -284,6 +315,31 @@ export default function EditProfile() {
                     borderRadius: "8px",
                   }}
                 />
+                <button
+                  type='button'
+                  onClick={handleDeleteImage}
+                  aria-label='Delete profile image'
+                  style={{
+                    marginLeft: "8px",
+                    marginTop: "10px",
+                    border: "none",
+                    background: "#dc3545",
+                    color: "#fff",
+                    borderRadius: "50%",
+                    width: "24px",
+                    height: "24px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    lineHeight: "1",
+                  }}
+                >
+                  <FaTimes />
+                </button>
+              </div>
+            )}
+            {imageLoading && (
+              <div className='mb-2'>
+                <Loader />
               </div>
             )}
             <input
@@ -293,6 +349,7 @@ export default function EditProfile() {
               className='form-control'
               {...register("img")}
               onChange={handleImageChange}
+              ref={imageInputRef}
             />
             <small className='text-muted d-block mt-1'>
               Accepted formats: JPG, PNG, GIF (Max 5MB)

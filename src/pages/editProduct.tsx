@@ -3,12 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/authContext";
 import { useEffect, useState } from "react";
 import "./uploadProduct.css";
+import { FaTimes, FaTimesCircle } from "react-icons/fa";
 
 type ProductForm = {
   name: string;
   description: string;
   category: string;
-  tag: string;
+  subcategory?: string;
+  tag: string[];
   price: string;
   currency: string;
   quantity: string;
@@ -21,6 +23,14 @@ type Product = {
   price: number;
   category?: string;
   description: string;
+  subCategory: {
+    category: {
+      id: string;
+      name: string;
+    };
+    id: string;
+    name: string;
+  };
   imageUrls: string[];
   imageIds: string[];
   tag: string[];
@@ -38,16 +48,24 @@ type ResponseObject = {
   loading: boolean;
 };
 
+type CatAndSubCat = Record<string, string[]>;
 export default function EditProduct() {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
   const { accessToken } = useAuthContext();
-  const { register, handleSubmit, reset } = useForm<ProductForm>();
+  const { register, handleSubmit, reset, watch, setValue } =
+    useForm<ProductForm>({
+      defaultValues: { tag: [] },
+    });
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const [imagePreview, setImagePreview] = useState<string[]>([]);
-  const [newImages, setNewImages] = useState<FileList | null>(null);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [newImages, setNewImages] = useState<File[]>([]);
+  const [newImagePreviews, setNewImagePreviews] = useState<string[]>([]);
+
+  const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
 
   const [response, setResponse] = useState<ResponseObject>({
     error: null,
@@ -58,28 +76,48 @@ export default function EditProduct() {
   });
   const [modal, setModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
+  const [catAndSubCat, setCatAndSubCat] = useState<CatAndSubCat | null>(null);
+
+  // fetch enums
+  useEffect(() => {
+    fetch(`http://localhost:3000/products/categ_and_subCateg_enums`)
+      .then((res) => res.json())
+      .then((data) => setCatAndSubCat(data));
+  }, []);
+
+  const watchedCategory = watch("category");
+
+  const getCategoryOptions = () => {
+    if (!catAndSubCat) return [] as any[];
+    return Object.keys(catAndSubCat);
+  };
+
+  const getSubcategoryOptions = (cat?: string) => {
+    if (!cat || !catAndSubCat) return [] as any[];
+
+    if (cat in catAndSubCat) {
+      const subs = catAndSubCat[cat];
+      return subs;
+    }
+    return [] as any[];
+  };
 
   // Fetch product data
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await fetch(
-          `http://localhost:3000/products/product/${productId}`,
-        );
+        const res = await fetch(`http://localhost:3000/products/${productId}`);
         const data = await res.json();
-        if (data) {
-          setProduct(data);
-          setImagePreview(data.imageUrls || []);
-          reset({
-            name: data.name,
-            description: data.description,
-            category: data.category,
-            tag: data.tag?.[0] || "",
-            price: data.price.toString(),
-            currency: data.currency,
-            quantity: data.quantity.toString(),
-          });
+        if (data?.success || data?.data) {
+          setProduct(data.data);
+          setExistingImages(data.data.imageUrls || []);
+          const incomingTags = Array.isArray(data.data.tag)
+            ? data.data.tag
+            : data.data.tag
+              ? [data.data.tag]
+              : [];
+          setTags(incomingTags);
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -91,42 +129,101 @@ export default function EditProduct() {
     if (productId) {
       fetchProduct();
     }
-  }, [productId, reset]);
+  }, [productId, reset, setValue]);
+
+  useEffect(() => {
+    if (product) {
+      reset({
+        name: product.name,
+        description: product.description,
+        category: product.subCategory.category.name,
+        subcategory: product.subCategory.name,
+        tag: tags,
+        price: product.price.toString(),
+        currency: product.currency,
+        quantity: product.quantity.toString(),
+      });
+      if (tags) {
+        setValue("tag", tags, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+      }
+    }
+  }, [product, tags]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files) {
-      setNewImages(files);
-      const previews = Array.from(files).map((file) => {
-        return new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            resolve(reader.result as string);
-          };
-          reader.readAsDataURL(file);
-        });
+    if (!files) return;
+    const arr = Array.from(files);
+    setNewImages(arr);
+    const previews = arr.map((file) => {
+      return new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
       });
-      Promise.all(previews).then((results) => {
-        setImagePreview(results);
-      });
+    });
+    Promise.all(previews).then((results) => setNewImagePreviews(results));
+  };
+
+  const removeNewImage = (index: number) => {
+    const updatedFiles = newImages.filter((_, i) => i !== index);
+    const updatedPreviews = newImagePreviews.filter((_, i) => i !== index);
+    setNewImages(updatedFiles);
+    setNewImagePreviews(updatedPreviews);
+  };
+
+  const addTag = () => {
+    const trimmedTag = tagInput.trim();
+
+    if (!trimmedTag) return;
+
+    const alreadyExists = tags.some(
+      (tag) => tag.toLowerCase() === trimmedTag.toLowerCase(),
+    );
+
+    if (alreadyExists) {
+      setTagInput("");
+      return;
     }
+
+    const updatedTags = [...tags, trimmedTag];
+    setTags(updatedTags);
+    setValue("tag", updatedTags, { shouldDirty: true, shouldTouch: true });
+    setTagInput("");
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    const updatedTags = tags.filter((tag) => tag !== tagToRemove);
+    setTags(updatedTags);
+    setValue("tag", updatedTags, { shouldDirty: true, shouldTouch: true });
   };
 
   const submitEditProductForm = async (form: ProductForm) => {
     try {
       setResponse((prev) => ({ ...prev, loading: true }));
 
+      if (tags.length === 0) {
+        window.alert(
+          "Please add at least one tag before updating the product.",
+        );
+        setResponse((prev) => ({ ...prev, loading: false }));
+        return;
+      }
+
       const formData = new FormData();
       formData.append("name", form.name);
       formData.append("description", form.description);
       formData.append("category", form.category);
-      formData.append("tag", form.tag);
+      if (form.subcategory) formData.append("subcategory", form.subcategory);
+      tags.forEach((tag) => formData.append("tag", tag));
       formData.append("price", form.price);
       formData.append("currency", form.currency);
       formData.append("quantity", form.quantity);
 
-      if (newImages) {
-        Array.from(newImages).forEach((file: File) => {
+      if (newImages && newImages.length > 0) {
+        newImages.forEach((file: File) => {
           formData.append("images", file);
         });
       }
@@ -362,10 +459,49 @@ export default function EditProduct() {
                       <option value='' disabled>
                         Select a category
                       </option>
-                      <option value='clothes'>👕 Clothes</option>
-                      <option value='kitchenware'>🍳 Kitchen Ware</option>
-                      <option value='devices'>📱 Devices</option>
+                      {getCategoryOptions().map((opt: string, idx: number) => {
+                        const value = opt;
+                        const label = String(opt);
+                        return (
+                          <option key={idx} value={value}>
+                            {label}
+                          </option>
+                        );
+                      })}
                     </select>
+                  </div>
+                </div>
+                <div className='form-col'>
+                  <div className='form-group'>
+                    <label htmlFor='product-subcategory' className='form-label'>
+                      Subcategory
+                    </label>
+                    <select
+                      id='product-subcategory'
+                      className='form-control form-input'
+                      defaultValue=''
+                      {...register("subcategory")}
+                    >
+                      <option value='' disabled>
+                        Select a subcategory
+                      </option>
+                      {Array.isArray(getSubcategoryOptions(watchedCategory)) &&
+                        getSubcategoryOptions(watchedCategory).length > 0 &&
+                        getSubcategoryOptions(watchedCategory).map(
+                          (opt: any, idx: number) => {
+                            const value = String(opt);
+                            const label = String(opt);
+                            return (
+                              <option key={idx} value={value}>
+                                {label}
+                              </option>
+                            );
+                          },
+                        )}
+                    </select>
+                    <small className='form-help-text'>
+                      Choose a relevant subcategory (if available)
+                    </small>
                   </div>
                 </div>
 
@@ -374,13 +510,74 @@ export default function EditProduct() {
                     <label htmlFor='product-tag' className='form-label'>
                       Tag <span className='required-star'>*</span>
                     </label>
-                    <input
-                      id='product-tag'
-                      type='text'
-                      className='form-control form-input'
-                      placeholder='e.g. summer, bestseller, new'
-                      {...register("tag", { required: true })}
-                    />
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <input
+                        id='product-tag'
+                        type='text'
+                        className='form-control form-input'
+                        placeholder='e.g. summer, bestseller, new'
+                        value={tagInput}
+                        onChange={(event) => setTagInput(event.target.value)}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") {
+                            event.preventDefault();
+                            addTag();
+                          }
+                        }}
+                      />
+                      <button
+                        type='button'
+                        className='btn-submit-primary'
+                        onClick={addTag}
+                        style={{ whiteSpace: "nowrap", minWidth: "80px" }}
+                      >
+                        Add
+                      </button>
+                    </div>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "8px",
+                        marginTop: "12px",
+                      }}
+                    >
+                      {tags.map((tag) => (
+                        <span
+                          key={tag}
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            background: "#eef2ff",
+                            color: "#3730a3",
+                            padding: "6px 10px",
+                            borderRadius: "999px",
+                            fontSize: "0.85rem",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {tag}
+                          <button
+                            type='button'
+                            aria-label={`Remove ${tag}`}
+                            onClick={() => removeTag(tag)}
+                            style={{
+                              border: "none",
+                              background: "transparent",
+                              color: "#3730a3",
+                              fontWeight: "bold",
+                              cursor: "pointer",
+                              padding: 0,
+                            }}
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+
                     <small className='form-help-text'>
                       Help customers find your product
                     </small>
@@ -424,11 +621,11 @@ export default function EditProduct() {
                     <select
                       id='product-currency'
                       className='form-control form-input'
-                      defaultValue='usd'
+                      defaultValue='naira'
                       {...register("currency", { required: true })}
                     >
-                      <option value='usd'>USD ($)</option>
-                      <option value='naira'>Naira (₦)</option>
+                      <option value='$'>USD ($)</option>
+                      <option value='₦'>Naira (₦)</option>
                     </select>
                   </div>
                 </div>
@@ -452,7 +649,7 @@ export default function EditProduct() {
             </section>
 
             {/* Current Images Section */}
-            {imagePreview.length > 0 && (
+            {existingImages.length > 0 && (
               <section className='form-section'>
                 <div className='section-header'>
                   <h2 className='section-title'>📸 Current Images</h2>
@@ -468,7 +665,7 @@ export default function EditProduct() {
                     gap: "1rem",
                   }}
                 >
-                  {imagePreview.map((img, idx) => (
+                  {existingImages.map((img, idx) => (
                     <img
                       key={idx}
                       src={img}
@@ -511,6 +708,46 @@ export default function EditProduct() {
                     Drag files or click to upload
                   </span>
                 </div>
+                {newImagePreviews.length > 0 && (
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fill, minmax(120px, 1fr))",
+                      gap: "0.75rem",
+                      marginTop: "12px",
+                    }}
+                  >
+                    {newImagePreviews.map((src, idx) => (
+                      <div key={idx} style={{ position: "relative" }}>
+                        <img
+                          src={src}
+                          alt={`new preview ${idx + 1}`}
+                          style={{
+                            width: "100%",
+                            height: "120px",
+                            objectFit: "cover",
+                            borderRadius: 6,
+                          }}
+                        />
+                        <span
+                          onClick={() => removeNewImage(idx)}
+                          style={{
+                            position: "absolute",
+                            top: 6,
+                            right: 6,
+
+                            borderRadius: 14,
+                            cursor: "pointer",
+                          }}
+                          aria-label={`Remove image ${idx + 1}`}
+                        >
+                          <FaTimesCircle size={20} />
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <small className='form-help-text'>
                   📸 Supported formats: JPG, PNG, WebP. Multiple images allowed.
                 </small>

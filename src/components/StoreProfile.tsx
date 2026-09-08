@@ -56,12 +56,18 @@ const LoadingIcon = () => {
   );
 };
 
+const whatsappMessage = (
+  product: Product & { store: { name: string; whatsapp: string } },
+) => {
+  const message = `Hello, I'm interested in buying ${product.name} of ${product.currency} ${product.price}. Is it still available?`;
+
+  return `https://wa.me/${product.store.whatsapp}?text=${encodeURIComponent(message)}`;
+};
 export default function StoreProfile() {
   const { userInfo } = useAuthContext();
 
   // const { addToCart, checkIfAddedToCart, setPath } = useAppContext();
   const navigate = useNavigate();
-  const id = 3;
 
   const [showContact, setShowContact] = useState(false);
   const [showProductModal, setShowProductModal] = useState(false);
@@ -80,10 +86,10 @@ export default function StoreProfile() {
       setErrorProducts(false);
       try {
         const response = await fetch(
-          `http://localhost:3000/products/store_products/${userInfo.id}`,
+          `http://localhost:3000/products/store_products/${userInfo?.id}`,
         );
         const data = await response.json();
-        setProducts(data);
+        setProducts(data.products);
       } catch (error) {
         console.error("Error fetching products:", error);
         setErrorProducts(true);
@@ -103,10 +109,10 @@ export default function StoreProfile() {
 
       try {
         const response = await fetch(
-          `http://localhost:3000/store/store_info/${userInfo.id}`,
+          `http://localhost:3000/store/store_info/${userInfo?.id}`,
         );
         const data = await response.json();
-        setStoreInfo(data);
+        setStoreInfo(data.data);
       } catch (error) {
         console.error("Error fetching store info:", error);
         setErrorStoreInfo(true);
@@ -151,8 +157,8 @@ export default function StoreProfile() {
             </p>
             <p className='mb-0'>
               <a
-                href={`https://wa.me/${storeInfo?.whatsapp}`}
-                target='_blank'
+                // href={whatsappMessage(selectedProduct, storeInfo)}
+                // target='_blank'
                 rel='noreferrer'
                 className='ms-2 d-inline-flex align-items-center'
               >
@@ -196,7 +202,7 @@ export default function StoreProfile() {
           <p className='mb-0'>
             WhatsApp:
             <a
-              href='https://wa.me/2348000000000'
+              href={`https://wa.me/${storeInfo?.whatsapp}`}
               target='_blank'
               rel='noreferrer'
               className='ms-2 d-inline-flex align-items-center'
@@ -301,28 +307,15 @@ export default function StoreProfile() {
                         <Card.Text className='text-muted small flex-grow-1 text-truncate'>
                           {p.description}
                         </Card.Text>
-                        <div className='d-flex gap-2 mt-2'>
-                          <Button size='sm' variant='success'>
-                            {"Save"}
-                          </Button>
+                        <div className=' m-auto mt-2'>
                           <Button
                             size='sm'
-                            variant='secondary'
-                            onClick={() => {
-                              setSelectedProduct(p);
-                              setShowProductModal(true);
-                            }}
-                          >
-                            View
-                          </Button>
-                          <Button
-                            size='sm'
-                            variant='warning'
+                            variant='primary'
                             onClick={() =>
-                              navigate(`/products/edit_product/${p.id}`)
+                              navigate(`/products/${userInfo?.id}/${p.id}`)
                             }
                           >
-                            Edit
+                            View
                           </Button>
                         </div>
                       </Card.Body>

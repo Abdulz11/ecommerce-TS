@@ -1,33 +1,112 @@
-import { FieldValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import "./uploadProduct.css";
 import { useAuthContext } from "../context/authContext";
+import { useState } from "react";
 
 export default function UploadProduct() {
   type ProductForm = {
     name: string;
     description: string;
     category: string;
-    tag: string;
+    tag: string[];
     price: string;
     currency: string;
     quantity: string;
     images: FileList;
   };
+
   const { accessToken } = useAuthContext();
-  const { register, handleSubmit } = useForm<ProductForm>();
+  const { register, handleSubmit, setValue } = useForm<ProductForm>({
+    defaultValues: {
+      tag: [],
+    },
+  });
+  const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [selectedImagePreviews, setSelectedImagePreviews] = useState<string[]>(
+    [],
+  );
+
+  const addTag = () => {
+    const trimmedTag = tagInput.trim();
+
+    if (!trimmedTag) return;
+
+    const alreadyExists = tags.some(
+      (tag) => tag.toLowerCase() === trimmedTag.toLowerCase(),
+    );
+
+    if (alreadyExists) {
+      setTagInput("");
+      return;
+    }
+
+    const updatedTags = [...tags, trimmedTag];
+    setTags(updatedTags);
+    setValue("tag", updatedTags, { shouldDirty: true, shouldTouch: true });
+    setTagInput("");
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    const updatedTags = tags.filter((tag) => tag !== tagToRemove);
+    setTags(updatedTags);
+    setValue("tag", updatedTags, { shouldDirty: true, shouldTouch: true });
+  };
+
+  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    const arr = Array.from(files);
+    setSelectedImages(arr);
+    // generate previews
+    const previews = arr.map((file) => {
+      return new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
+    });
+    Promise.all(previews).then((results) => setSelectedImagePreviews(results));
+    // keep react-hook-form file value in sync if needed
+    try {
+      setValue("images", files as any, {
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  const removeSelectedImage = (index: number) => {
+    const updatedFiles = selectedImages.filter((_, i) => i !== index);
+    const updatedPreviews = selectedImagePreviews.filter((_, i) => i !== index);
+    setSelectedImages(updatedFiles);
+    setSelectedImagePreviews(updatedPreviews);
+    // react-hook-form: cannot directly create FileList easily; skip syncing
+  };
 
   const submitUserData = async (form: ProductForm) => {
+    if (tags.length === 0) {
+      window.alert("Please add at least one tag before uploading the product.");
+      return;
+    }
+
     const formData = new FormData();
 
     formData.append("name", form.name);
     formData.append("description", form.description);
     formData.append("category", form.category);
-    formData.append("tag", form.tag);
+    tags.forEach((tag) => formData.append("tag", tag));
     formData.append("price", form.price);
     formData.append("currency", form.currency);
     formData.append("quantity", form.quantity);
 
-    Array.from(form.images).forEach((file: File) => {
+    const filesToUpload = selectedImages.length
+      ? selectedImages
+      : Array.from(form.images || ([] as any));
+    filesToUpload.forEach((file: File) => {
       formData.append("images", file);
     });
 
@@ -134,13 +213,74 @@ export default function UploadProduct() {
                   <label htmlFor='product-tag' className='form-label'>
                     Tag <span className='required-star'>*</span>
                   </label>
-                  <input
-                    id='product-tag'
-                    type='text'
-                    className='form-control form-input'
-                    placeholder='e.g. summer, bestseller, new'
-                    {...register("tag", { required: true })}
-                  />
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <input
+                      id='product-tag'
+                      type='text'
+                      className='form-control form-input'
+                      placeholder='e.g. summer, bestseller, new'
+                      value={tagInput}
+                      onChange={(event) => setTagInput(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          event.preventDefault();
+                          addTag();
+                        }
+                      }}
+                    />
+                    <button
+                      type='button'
+                      className='btn-submit-primary'
+                      onClick={addTag}
+                      style={{ whiteSpace: "nowrap", minWidth: "80px" }}
+                    >
+                      Add
+                    </button>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "8px",
+                      marginTop: "12px",
+                    }}
+                  >
+                    {tags.map((tag) => (
+                      <span
+                        key={tag}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          background: "#eef2ff",
+                          color: "#3730a3",
+                          padding: "6px 10px",
+                          borderRadius: "999px",
+                          fontSize: "0.85rem",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {tag}
+                        <button
+                          type='button'
+                          aria-label={`Remove ${tag}`}
+                          onClick={() => removeTag(tag)}
+                          style={{
+                            border: "none",
+                            background: "transparent",
+                            color: "#3730a3",
+                            fontWeight: "bold",
+                            cursor: "pointer",
+                            padding: 0,
+                          }}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+
                   <small className='form-help-text'>
                     Help customers find your product
                   </small>
@@ -228,11 +368,57 @@ export default function UploadProduct() {
                   accept='image/*'
                   className='form-control form-file-input'
                   {...register("images")}
+                  onChange={handleImagesChange}
                 />
                 <span className='file-upload-text'>
                   Drag files or click to upload
                 </span>
               </div>
+              {selectedImagePreviews.length > 0 && (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fill, minmax(120px, 1fr))",
+                    gap: "0.75rem",
+                    marginTop: "12px",
+                  }}
+                >
+                  {selectedImagePreviews.map((src, idx) => (
+                    <div key={idx} style={{ position: "relative" }}>
+                      <img
+                        src={src}
+                        alt={`preview ${idx + 1}`}
+                        style={{
+                          width: "100%",
+                          height: "120px",
+                          objectFit: "cover",
+                          borderRadius: 6,
+                        }}
+                      />
+                      <button
+                        type='button'
+                        onClick={() => removeSelectedImage(idx)}
+                        style={{
+                          position: "absolute",
+                          top: 6,
+                          right: 6,
+                          background: "rgba(0,0,0,0.6)",
+                          color: "white",
+                          border: "none",
+                          width: 28,
+                          height: 28,
+                          borderRadius: 14,
+                          cursor: "pointer",
+                        }}
+                        aria-label={`Remove image ${idx + 1}`}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
               <small className='form-help-text'>
                 📸 Supported formats: JPG, PNG, WebP. Multiple images allowed.
               </small>
