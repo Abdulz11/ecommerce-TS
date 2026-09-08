@@ -16,8 +16,10 @@ export default function CategoryPage() {
     setLoading(true);
     fetch(`http://localhost:3000/products${search}`)
       .then((response) => response.json())
-      .then((product) => {
-        setProducts(product);
+      .then((data) => {
+        if (!data.success)
+          throw Error(data?.error || "Something went wrong when fetching");
+        setProducts(data.data);
       })
       .catch(() => {
         setError(true);
@@ -95,7 +97,11 @@ export default function CategoryPage() {
                   <Card.Body className='p-3'>
                     <div className='card-product-name'>
                       <h4>{product.name}</h4>
-                      <span>{product?.price}</span>
+
+                      <span>
+                        {product?.currency}
+                        {product?.price}
+                      </span>
                     </div>
                     <div className='card-product-text'>
                       {product.description}

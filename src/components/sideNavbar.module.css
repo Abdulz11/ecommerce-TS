@@ -27,7 +27,7 @@
   top: 0;
   width: 230px;
   height: 100vh;
-  background-color: #f8f9fa;
+  background-color: #f8f8f8;
   padding: 40px 20px;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
@@ -36,11 +36,6 @@
 
   transition: transform 0.3s ease;
 }
-
-/* sideNavbar {
-    transform: translateX(-100%);
-    width: 250px;
-  } */
 
 .sideNavbar.open {
   transform: translateX(0);
@@ -68,8 +63,8 @@
 }
 
 .navLink:hover {
-  background-color: #e9ecef;
-  color: #0056b3;
+  background-color: #efefef;
+  color: #000000;
   padding-left: 20px;
 }
 
@@ -99,8 +94,8 @@
   height: 24px;
   top: -10px;
   right: -5px;
-  background-color: #0056b3;
-  color: white;
+  background-color: #000000;
+  color: #ffffff;
   border-radius: 50%;
   font-size: 12px;
   font-weight: bold;
@@ -121,7 +116,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background-color: #e7f3ff;
+  background-color: #f1f1f1;
   border-radius: 6px;
 }
 
@@ -131,7 +126,7 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background-color: #0056b3;
+  background-color: #000000;
   color: white;
   border-radius: 50%;
   font-weight: bold;
@@ -146,7 +141,7 @@
 }
 
 .logoutButton {
-  background-color: #dc3545;
+  background-color: #000000;
   color: white;
   padding: 10px 16px;
   border-radius: 6px;
@@ -157,7 +152,7 @@
 }
 
 .logoutButton:hover {
-  background-color: #c82333;
+  background-color: #333333;
   padding-left: 16px;
 }
 
@@ -185,49 +180,6 @@
   z-index: 999;
   display: none;
 }
-
-/* Responsive Design */
-/* @media (max-width: 768px) {
-  .hamburgerBtn {
-    display: flex;
-  }
-
-  .
-
-  .sideNavbar.open ~ .overlay,
-  .overlay.open {
-    display: block;
-  }
-
-  .closeBtn {
-    display: block;
-  }
-} */
-
-/* @media (max-width: 576px) {
-  .sideNavbar {
-    width: 100%;
-    max-width: 280px;
-  }
-
-  .navLink {
-    padding: 10px 12px;
-  }
-
-  .navLink:hover {
-    padding-left: 16px;
-  }
-
-  .cartImage {
-    width: 25px;
-    height: 25px;
-  }
-
-  .hamburgerBtn {
-    top: 15px;
-    left: 15px;
-  }
-} */
 
 /* Scrollbar Styling */
 .sideNavbar::-webkit-scrollbar {

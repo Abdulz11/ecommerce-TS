@@ -1,14 +1,14 @@
 /* Upload Product Page Styles */
 
 :root {
-  --primary-color: #007bff;
-  --primary-dark: #0056b3;
-  --primary-light: #e7f1ff;
-  --success-color: #28a745;
-  --danger-color: #dc3545;
-  --text-primary: #212529;
+  --primary-color: #000000;
+  --primary-dark: #111111;
+  --primary-light: #f3f3f3;
+  --success-color: #000000;
+  --danger-color: #000000;
+  --text-primary: #000000;
   --text-secondary: #6c757d;
-  --border-color: #dee2e6;
+  --border-color: #dddddd;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
@@ -18,7 +18,7 @@
 
 /* Main Container */
 .upload-page-container {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f3f3f3 100%);
   min-height: 100vh;
   padding: 40px 20px;
   display: flex;

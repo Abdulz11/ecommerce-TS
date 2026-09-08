@@ -320,7 +320,7 @@ export default function EditProduct() {
             <div
               style={{
                 padding: "1.5rem",
-                borderBottom: "1px solid #e9ecef",
+                borderBottom: "1px solid #e5e5e5",
               }}
             >
               <h5
@@ -328,7 +328,7 @@ export default function EditProduct() {
                   margin: 0,
                   fontSize: "1.25rem",
                   fontWeight: 600,
-                  color: response.success ? "#198754" : "#dc3545",
+                  color: response.success ? "#111111" : "#333333",
                 }}
               >
                 {response.success ? "✓ Product Updated" : "✕ Update Failed"}
@@ -354,8 +354,8 @@ export default function EditProduct() {
             <div
               style={{
                 padding: "1rem 1.5rem",
-                backgroundColor: "#f8f9fa",
-                borderTop: "1px solid #e9ecef",
+                backgroundColor: "#f5f5f5",
+                borderTop: "1px solid #e5e5e5",
                 display: "flex",
                 justifyContent: "flex-end",
               }}
@@ -550,8 +550,8 @@ export default function EditProduct() {
                             display: "inline-flex",
                             alignItems: "center",
                             gap: "6px",
-                            background: "#eef2ff",
-                            color: "#3730a3",
+                            background: "#f3f3f3",
+                            color: "#000000",
                             padding: "6px 10px",
                             borderRadius: "999px",
                             fontSize: "0.85rem",
@@ -566,7 +566,7 @@ export default function EditProduct() {
                             style={{
                               border: "none",
                               background: "transparent",
-                              color: "#3730a3",
+                              color: "#000000",
                               fontWeight: "bold",
                               cursor: "pointer",
                               padding: 0,

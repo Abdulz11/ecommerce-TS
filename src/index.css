@@ -152,17 +152,19 @@ i {
   align-content: center;
   gap: 30px;
   margin: 80px 0px;
-  background-color: lime;
+  background-color: #f5f5f5;
   min-height: 400px;
 }
 
 .newsletter-div h2 {
   font-size: 80px;
+  color: #000;
 }
 
 .newsletter-div h5 {
   font-size: 20px;
   font-weight: 600;
+  color: #2d2d2d;
 }
 
 .newsletter-div div input {
@@ -170,20 +172,23 @@ i {
   padding: 7px;
   padding-left: 30px;
   outline: none;
-  border: none;
+  border: 1px solid #d4d4d4;
+  background: #fff;
 }
 .newsletter-div div button {
   padding: 5px;
   font-size: 18px;
   font-weight: 600;
-  background-color: aqua;
+  background-color: #000;
+  color: #fff;
 }
 
 /* FOOTER */
 .footer-div {
   display: grid;
   padding: 50px;
-  background-color: aquamarine;
+  background-color: #111111;
+  color: #fff;
   grid-template-columns: repeat(3, 1fr);
   font-size: 20px;
 }
@@ -193,13 +198,14 @@ i {
   gap: 13px;
 }
 .footer-links a {
-  color: black;
+  color: #fff;
   text-decoration: none;
 }
 
 .footer-logo {
   font-weight: 600;
   font-size: 30px;
+  color: #fff;
 }
 .footer-div li,
 span {
@@ -306,8 +312,8 @@ span {
   font-size: 20px;
   margin: 0 10px;
   border: none;
-  background-color: black;
-  color: white;
+  background-color: #000;
+  color: #fff;
   padding: 10px 5px;
   font-weight: 600;
 }
@@ -338,7 +344,6 @@ span {
 }
 .cart-container .btn {
   width: 100%;
-  /* margin-left: 25px; */
   border-radius: 7px;
   border: none;
   font-size: 1.2rem;
@@ -590,7 +595,7 @@ span {
   /* footer */
   .footer-div {
     padding: 10px;
-    background-color: aquamarine;
+    background-color: #111111;
     grid-template-rows: repeat(3, 1fr);
     grid-template-columns: none;
     font-size: 20px;

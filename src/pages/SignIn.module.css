@@ -67,7 +67,7 @@
 
 .modalHeader {
   padding: 1.5rem;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid #e5e5e5;
 }
 
 .modalTitle {
@@ -77,11 +77,11 @@
 }
 
 .successModal .modalTitle {
-  color: #198754;
+  color: #111111;
 }
 
 .errorModal .modalTitle {
-  color: #dc3545;
+  color: #333333;
 }
 
 .modalBody {
@@ -93,8 +93,8 @@
 
 .modalFooter {
   padding: 1rem 1.5rem;
-  background-color: #f8f9fa;
-  border-top: 1px solid #e9ecef;
+  background-color: #f5f5f5;
+  border-top: 1px solid #e5e5e5;
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;

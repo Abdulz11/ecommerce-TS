@@ -52,7 +52,7 @@ export default function NavList() {
         {accessToken && (
           <div className={`${styles.userBadgeGroup} ms-2`} title={userName}>
             <div
-              className={`d-inline-flex align-items-center justify-content-center bg-primary text-white ${styles.userAvatar}`}
+              className={`d-inline-flex align-items-center justify-content-center ${styles.userAvatar}`}
             >
               {initials}
             </div>

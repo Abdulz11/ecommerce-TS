@@ -6,7 +6,7 @@ export default function PrivateRoute(props: {
   allowedRoles?: string[];
 }) {
   const { accessToken, userInfo } = useAuthContext();
-  if (!accessToken) {
+  if (!accessToken || !userInfo) {
     return <Navigate to='/signin' replace />;
   }
   if (

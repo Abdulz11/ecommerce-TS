@@ -49,7 +49,7 @@
   width: 100%;
   height: 220px;
   overflow: hidden;
-  background: #f8f9fa;
+  background: #f3f3f3;
 }
 
 .productImage {
@@ -99,7 +99,7 @@
 }
 
 .overlayButton:hover {
-  background: #0d6efd;
+  background: #0d0d0d;
   color: white;
   transform: scale(1.1);
 }
@@ -157,8 +157,8 @@
 }
 
 .quantityBadge.lowStock {
-  background: #ffe7e7;
-  color: #dc3545;
+  background: #f3f3f3;
+  color: #000000;
 }
 
 .categoryTag {
@@ -217,11 +217,11 @@
 }
 
 .secondaryButton:hover {
-  background: #dee2e6;
+  background: #dfe3e7;
 }
 
 .savedButton {
-  background: #198754;
+  background: #111111;
   color: white;
 }
 
