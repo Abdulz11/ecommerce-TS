@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { fetchData } from "../lib/api";
 
 const Clothing =
   "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fG1vZGVsJTIwaW4lMjBjbG90aGVzfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60";
@@ -18,7 +19,7 @@ function Categories() {
     { category: string; image: string }[]
   >([]);
   useEffect(() => {
-    fetch("http://localhost:3000/products/categ_and_subCateg_enums")
+    fetchData("/products/categ_and_subCateg_enums")
       .then((response) => response.json())
       .then((data) => {
         const categoriesStringArr = Object.keys(data);
@@ -62,7 +63,7 @@ function Categories() {
         ))}
         {categories.length > 3 && (
           <Col xs={12} className='text-center mt-4'>
-            <Link to='/categories' className='btn btn-cart-banner'>
+            <Link to='/categories' className='btn btn-primary px-3'>
               View All Categories
             </Link>
           </Col>

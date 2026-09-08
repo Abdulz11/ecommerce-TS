@@ -4,6 +4,7 @@ import { useAuthContext } from "../context/authContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./SignIn.module.css";
+import { fetchData } from "../lib/api";
 
 type responseObject = {
   error: string | null;
@@ -31,11 +32,7 @@ export default function SignIn() {
   async function submitSignInForm(formData: FieldValues) {
     try {
       setResponse((prev) => ({ ...prev, loading: true }));
-      const res = await fetch("http://localhost:3000/user/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const res = await fetchData("user/signin", "POST", {
         body: JSON.stringify(formData),
       });
       const data = await res.json();

@@ -323,7 +323,7 @@ export default function EditProfile() {
                     marginLeft: "8px",
                     marginTop: "10px",
                     border: "none",
-                    background: "#dc3545",
+                    background: "#000000",
                     color: "#fff",
                     borderRadius: "50%",
                     width: "24px",

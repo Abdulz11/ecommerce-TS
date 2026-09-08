@@ -1,69 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppContext } from "../context/appcontext";
 import { FaArrowLeft, FaChevronRight, FaWhatsapp } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa";
-import {
-  Alert,
-  Badge,
-  Button,
-  Col,
-  Container,
-  Row,
-  Spinner,
-} from "react-bootstrap";
+import { Alert, Badge, Button, Container, Spinner } from "react-bootstrap";
 import styles from "./productspage.module.css";
-import { ProfileData } from "../types";
+import { ProductDetail, ProfileData } from "../types";
+import { fetchData } from "../lib/api";
 
-type ProductDetail = {
-  id: string;
-  name: string;
-  description: string;
-  imageUrls?: string[];
-  store: {
-    name: string;
-    whatsapp: string | null | undefined;
-  };
-  price?: number | { raw: number; formatted_with_symbol?: string };
-  currency?: string;
-  quantity?: number;
-  subCategory: {
-    name: string;
-    category: {
-      name: string;
-    };
-  };
-  tag?: string[];
-};
-
-const dummyProduct: ProductDetail = {
-  id: "demo-123",
-  name: "Horizon Adventure Speaker",
-  description:
-    "A premium portable speaker with crisp audio, long battery life, and water-resistant housing for on-the-go listening.",
-  imageUrls: [
-    "https://images.unsplash.com/photo-1526178617479-1a9f5d6c8928?auto=format&fit=crop&w=1200&q=80",
-  ],
-  store: {
-    name: "Horizon Audio",
-    whatsapp: "+2348012345678",
-  },
-  price: {
-    raw: 129.99,
-    formatted_with_symbol: "$129.99",
-  },
-  currency: "$",
-  quantity: 27,
-  subCategory: {
-    name: "Portable Speakers",
-    category: {
-      name: "Audio",
-    },
-  },
-  tag: ["Portable", "Bluetooth", "Water-resistant", "12h Battery"],
-};
-
-const whatsappMessage = (product: ProductDetail) => {
+const whatsappMessage = (
+  product: ProductDetail & { store: { whatsapp: string } },
+) => {
   if (
     product?.store?.whatsapp === undefined ||
     product?.store?.whatsapp === null ||
@@ -80,9 +26,7 @@ export default function ProductsPage() {
   const { productId } = useParams();
 
   const navigate = useNavigate();
-  const { addToCart, checkIfAddedToCart } = useAppContext();
-
-  const [product, setProduct] = useState<ProductDetail | null>(dummyProduct);
+  const [product, setProduct] = useState<ProductDetail | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -107,9 +51,7 @@ export default function ProductsPage() {
       setError(null);
 
       try {
-        const response = await fetch(
-          `http://localhost:3000/products/${productId}`,
-        );
+        const response = await fetchData(`/products/${productId}`);
         if (!response.ok) {
           throw new Error("Unable to load product.");
         }
@@ -143,17 +85,12 @@ export default function ProductsPage() {
     );
   };
 
-  const productPrice = product
-    ? typeof product.price === "number"
-      ? product.price
-      : (product.price?.raw ?? 0)
-    : 0;
+  const productPrice = product?.price;
 
-  const formattedPrice = product
-    ? typeof product.price === "object" && product.price?.formatted_with_symbol
-      ? product.price.formatted_with_symbol
-      : `${product.currency ?? "₦"} ${productPrice.toFixed(2)}`
-    : "";
+  const formattedPrice =
+    product?.price !== undefined
+      ? `${product.currency ?? "₦"} ${product?.price?.toFixed(2)}`
+      : "";
 
   return (
     <Container className={`${styles.pageWrapper} py-5`}>
@@ -229,61 +166,47 @@ export default function ProductsPage() {
                   <h1 className={styles.productTitle}>{product.name}</h1>
                   <div className={styles.metaBadges}>
                     <Badge bg='primary' className={styles.metaBadge}>
-                      {product.subCategory.name ?? "Featured"}
+                      {product?.subCategory?.name ?? "Featured"}
                     </Badge>
                     <Badge bg='secondary' className={styles.metaBadge}>
-                      {product.quantity ?? 0} in stock
+                      {product?.quantity ?? 0} in stock
                     </Badge>
                   </div>
                 </div>
-                {product.subCategory?.name}
+                {product?.subCategory?.name}
                 <div className={styles.priceTag}>
                   {formattedPrice} this price{" "}
                 </div>
               </div>
 
-              <p className={styles.productDescription}>{product.description}</p>
+              <p className={styles.productDescription}>
+                {product?.description}
+              </p>
 
               <div className={styles.productInfoGrid}>
                 <div className={styles.productStat}>
                   <span className={styles.productStatTitle}>Category</span>
                   <span className={styles.productStatValue}>
-                    {product.subCategory.category.name ?? "General"}
+                    {product?.subCategory?.category?.name ?? "General"}
                   </span>
                 </div>
               </div>
 
               <div className={styles.actionsRow}>
                 <Button
-                  variant={
-                    checkIfAddedToCart(product.id) ? "success" : "primary"
-                  }
-                  onClick={() =>
-                    addToCart(product.id, {
-                      id: product.id,
-                      name: product.name,
-                      image: currentImage,
-                      price:
-                        typeof product.price === "number"
-                          ? product.price
-                          : productPrice,
-                    })
-                  }
-                  disabled={checkIfAddedToCart(product.id)}
+                  variant='primary'
+                  onClick={() => console.log("added to cart")}
                 >
-                  {checkIfAddedToCart(product.id)
-                    ? "Saved to cart"
-                    : "Add to cart"}
+                  Add to cart
                 </Button>
-                {/* <Button
-                  variant='outline-secondary'
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
+
+                {(
+                  product as ProductDetail & {
+                    store: {
+                      whatsapp: string;
+                    };
                   }
-                >
-                  View details
-                </Button> */}
-                {product?.store?.whatsapp ? (
+                ).store.whatsapp ? (
                   <>
                     <Button
                       variant='outline-secondary'
@@ -292,11 +215,17 @@ export default function ProductsPage() {
                       }
                     >
                       <a
-                        href={whatsappMessage(product)}
+                        href={whatsappMessage(
+                          product as ProductDetail & {
+                            store: {
+                              whatsapp: string;
+                            };
+                          },
+                        )}
                         target='_blank'
                         rel='noreferrer'
                       >
-                        <FaWhatsapp color='green' size={30} />
+                        <FaWhatsapp color='black' size={30} />
                       </a>
                     </Button>
                     <small

@@ -2,21 +2,8 @@ import { Container, Spinner } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./products.module.css";
-
-export type ProductDetail = {
-  id: string;
-  name: string;
-  description: string;
-  imageUrls: string[];
-  imageIds: string[];
-  category: string;
-  tag: string[];
-  price: number;
-  currency: string;
-  quantity: number;
-  storeId: string;
-  createdAt: Date;
-};
+import { fetchData } from "../lib/api";
+import { ProductDetail } from "../types";
 
 function Products() {
   const [products, setProducts] = useState<ProductDetail[]>([]);
@@ -25,10 +12,10 @@ function Products() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:3000/products")
+    fetchData("/products")
       .then((response) => response.json())
       .then((data) => {
-        setProducts(Array.isArray(data) ? data : []);
+        setProducts(data.data);
         setLoading(false);
       })
       .catch(() => {
@@ -66,10 +53,10 @@ function Products() {
         </div>
       ) : (
         <div className={styles.productGrid}>
-          {products.map((product) => {
-            const stockStatus = getInStockStatus(product.quantity);
-            const price = product.price ?? 0;
-            const categoryName = product.category || "Featured";
+          {products.slice(0, 6).map((product) => {
+            const stockStatus = getInStockStatus(product?.quantity);
+            const price = product?.price ?? 0;
+            const categoryName = product?.subCategory?.name || "Featured";
 
             return (
               <div key={product.id} className={styles.productCard}>
@@ -110,7 +97,7 @@ function Products() {
                   <div className={styles.priceRow}>
                     <span className={styles.productPrice}>
                       <span className={styles.productCurrency}>$</span>
-                      {price.toFixed(2)}
+                      {product?.price?.toFixed(2)}
                     </span>
                     <span
                       className={`${styles.quantityBadge} ${styles[stockStatus.className]}`}
@@ -129,18 +116,6 @@ function Products() {
                   </div>
 
                   <div className={styles.actionsContainer}>
-                    <button
-                      // className={
-                      //   checkIfAddedToCart(product.id)
-                      //     ? `${styles.productButton} ${styles.savedButton}`
-                      //     : `${styles.productButton} ${styles.primaryButton}`
-                      // }
-                      onClick={() =>
-                        console.log(`${product.id} removed from cart`)
-                      }
-                    >
-                      Add
-                    </button>
                     <button
                       className={`${styles.productButton} ${styles.secondaryButton}`}
                       onClick={() => handleViewProduct(product.id)}

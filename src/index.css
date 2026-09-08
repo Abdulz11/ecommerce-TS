@@ -4,6 +4,50 @@
   box-sizing: border-box;
 }
 
+:root {
+  --brand-black: #111111;
+  --brand-black-strong: #000000;
+  --brand-white: #ffffff;
+  --brand-soft: #f5f5f5;
+  --brand-border: #d9d9d9;
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  background-color: var(--brand-black) !important;
+  border-color: var(--brand-black) !important;
+  color: var(--brand-white) !important;
+  box-shadow: none !important;
+  font-weight: 600 !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  filter: brightness(0.96);
+}
+
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active,
+.btn-secondary:not(:disabled):not(.disabled):active,
+.btn-secondary:not(:disabled):not(.disabled).active,
+.show > .btn-secondary.dropdown-toggle {
+  background-color: var(--brand-white) !important;
+  border-color: var(--brand-black) !important;
+  color: var(--brand-black) !important;
+  box-shadow: none !important;
+}
+
 img {
   width: 100%;
   object-fit: cover;
@@ -40,7 +84,7 @@ i {
 
 /* SLIDER */
 .overall-container {
-  /* border: 2px solid red; */
+  /* border: 2px solid neutral; */
   display: flex;
   overflow: hidden;
 }
@@ -52,9 +96,9 @@ i {
 /* each image */
 .slider-container {
   height: 89vh;
-  /* border: 3px solid green; */
+  /* border: 3px solid neutral; */
   width: 100vw;
-  /* color: aquamarine; */
+  /* color: neutral; */
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -385,18 +429,6 @@ span {
   flex-direction: column;
 }
 
-.overall-product-div {
-  /* styles moved to products.module.css */
-}
-.products-div {
-  /* styles moved to products.module.css */
-}
-.product-img-div {
-  /* styles moved to products.module.css */
-}
-.product-img-div img {
-  /* styles moved to products.module.css */
-}
 /* payment */
 .payment-price {
   font-size: 25px;

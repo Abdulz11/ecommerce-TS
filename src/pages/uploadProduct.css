@@ -50,7 +50,11 @@
 
 /* Header Section */
 .upload-header-section {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--primary-dark) 100%
+  );
   color: white;
   padding: 40px 30px;
   text-align: center;
@@ -249,7 +253,11 @@
 
 /* Submit Button */
 .btn-submit-primary {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--primary-dark) 100%
+  );
   color: white;
   border: none;
   padding: 14px 40px;
@@ -357,7 +365,7 @@
 /* Accessibility & States */
 .form-input:disabled,
 .form-textarea:disabled {
-  background-color: #e9ecef;
+  background-color: #f3f3f3;
   color: var(--text-secondary);
   cursor: not-allowed;
 }

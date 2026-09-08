@@ -8,7 +8,6 @@ import {
   Modal,
 } from "react-bootstrap";
 import { Rings } from "react-loader-spinner";
-import { useAppContext } from "../context/appcontext";
 import { cartImage } from "../assets/images/cartImage";
 import { useNavigate } from "react-router-dom";
 import { FaWhatsapp } from "react-icons/fa";
@@ -162,7 +161,7 @@ export default function StoreProfile() {
                 rel='noreferrer'
                 className='ms-2 d-inline-flex align-items-center'
               >
-                <FaWhatsapp size={24} color='green' />
+                <FaWhatsapp size={24} color='black' />
                 {storeInfo?.whatsapp || "+23481564655"}
               </a>
             </p>
@@ -207,7 +206,7 @@ export default function StoreProfile() {
               rel='noreferrer'
               className='ms-2 d-inline-flex align-items-center'
             >
-              <FaWhatsapp size={24} color='green' />
+              <FaWhatsapp size={24} color='black' />
               {storeInfo?.whatsapp}
             </a>
           </p>

@@ -2,13 +2,14 @@ import styles from "./navbar.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/authContext";
 import { cartImage } from "../assets/images/cartImage";
-import { useAppContext } from "../context/appcontext";
+import { useState } from "react";
+import { fetchData } from "../lib/api";
 
 export default function NavList() {
-  const { cart } = useAppContext();
   const navigate = useNavigate();
-  console.log(navigate);
+
   const { accessToken, userInfo, setAccessToken } = useAuthContext();
+  const [cart, setCart] = useState([]);
   const userName = userInfo?.name || "User";
   const initials = userName
     .split(" ")
@@ -19,16 +20,12 @@ export default function NavList() {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:3000/user/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-
+      await fetchData("/user/logout", "POST");
       // Remove frontend access token
       localStorage.removeItem("accessToken");
       setAccessToken("");
       navigate("/");
-      // Update React state too
+      setCart([]);
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -79,12 +76,18 @@ export default function NavList() {
           </button>
         )}
       </div>
-      <div className={styles.cartDiv}>
-        <img src={cartImage} alt='shopping cart' className={styles.cartImage} />
-        {cart.length > 0 ? (
-          <span className={styles.cartBadge}>{cart.length}</span>
-        ) : null}
-      </div>
+      {userInfo?.role === "CUSTOMER" && (
+        <div className={styles.cartDiv}>
+          <img
+            src={cartImage}
+            alt='shopping cart'
+            className={styles.cartImage}
+          />
+          {cart.length > 0 ? (
+            <span className={styles.cartBadge}>{cart.length}</span>
+          ) : null}
+        </div>
+      )}
     </>
   );
 }

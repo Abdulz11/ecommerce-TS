@@ -1,7 +1,5 @@
 import { Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useAppContext } from "../context/appcontext";
-import { cartImage } from "../assets/images/cartImage";
 import Logo from "./logo";
 import styles from "./navbar.module.css";
 import SideNavbar from "./sideNavbar";
@@ -9,7 +7,6 @@ import NavList from "./navList";
 import { useEffect, useState } from "react";
 
 function Navbar() {
-  const { cart } = useAppContext();
   const [mobileScreen, setMobileScreen] = useState(window.innerWidth < 500);
 
   useEffect(() => {
@@ -26,19 +23,7 @@ function Navbar() {
     <Nav className={`container p-2 mt-3 ${styles.navRoot} `}>
       <Logo />
       {mobileScreen ? <SideNavbar /> : <NavList />}
-      <Link to='/cart' className={styles.navLink}>
-        {/* cart */}
-        {/* <div className={styles.cartDiv}>
-          <img
-            src={cartImage}
-            alt='shopping cart'
-            className={styles.cartImage}
-          />
-          {cart.length > 0 ? (
-            <span className={styles.cartBadge}>{cart.length}</span>
-          ) : null}
-        </div> */}
-      </Link>
+      <Link to='/cart' className={styles.navLink}></Link>
     </Nav>
   );
 }

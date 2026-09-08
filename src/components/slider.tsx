@@ -33,7 +33,7 @@ function Slider() {
           setCurrentIndex(0);
         }
       },
-      slideTransition ? 5000 : 300
+      slideTransition ? 5000 : 300,
     );
     return () => clearInterval(intervalId);
   }, [currentIndex]);

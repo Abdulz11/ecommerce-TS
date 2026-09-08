@@ -4,8 +4,8 @@
 }
 
 .sectionTitle {
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
-  font-weight: 700;
+  /* font-size: clamp(1.8rem, 3vw, 2.5rem); */
+  /* font-weight: 700; */
   margin-bottom: 2rem;
   color: #1a202c;
 }
@@ -212,12 +212,12 @@
 }
 
 .secondaryButton {
-  background: #e9ecef;
-  color: #495057;
+  background: #f3f3f3;
+  color: #111111;
 }
 
 .secondaryButton:hover {
-  background: #dfe3e7;
+  background: #e5e5e5;
 }
 
 .savedButton {

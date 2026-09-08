@@ -3,6 +3,7 @@ import Logo from "../components/logo";
 import styles from "./Register.module.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { fetchData } from "../lib/api";
 
 type responseObject = {
   error: string | null;
@@ -30,12 +31,8 @@ export default function Register() {
   async function submitRegisterForm(data: FieldValues) {
     try {
       setResponse((prev) => ({ ...prev, loading: true }));
-      console.log("Submitting registration form with data:", data);
-      const res = await fetch(`http://localhost:3000/user/registration`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+      const res = await fetchData(`user/registration`, "POST", {
         body: JSON.stringify(data),
       });
       const resData = await res.json();
@@ -128,39 +125,42 @@ export default function Register() {
         <div className={styles.registrationContainer}>
           <div className='mb-3'>
             <label htmlFor='name' className='form-label'>
-              Name
+              Name <span className='text-danger'>*</span>
             </label>
             <input
               id='name'
               type='text'
               className='form-control'
               placeholder='Name / Company'
+              required
               {...register("name", { required: true })}
             />
           </div>
 
           <div className='mb-3'>
             <label htmlFor='email' className='form-label'>
-              Email
+              Email <span className='text-danger'>*</span>
             </label>
             <input
               id='email'
               type='email'
               className='form-control'
               placeholder='Email'
+              required
               {...register("email", { required: true })}
             />
           </div>
 
           <div className='mb-3'>
             <label htmlFor='password' className='form-label'>
-              Password
+              Password <span className='text-danger'>*</span>
             </label>
             <input
               id='password'
               type='password'
               className='form-control'
               placeholder='Password'
+              required
               {...register("password", { required: true })}
             />
           </div>
@@ -193,18 +193,16 @@ export default function Register() {
 
           <div className='mb-3'>
             <label htmlFor='whatsapp' className='form-label'>
-              WhatsApp Number
+              WhatsApp Number <span className='text-danger'>*</span>
             </label>
             <input
               id='whatsapp'
               type='tel'
               className='form-control'
               placeholder='+1234567890 (include country code)'
-              {...register("whatsapp")}
+              required
+              {...register("whatsapp", { required: true })}
             />
-            <div className='form-text'>
-              Optional — used for order updates and verification.
-            </div>
           </div>
 
           <div className='mb-3'>
@@ -222,7 +220,7 @@ export default function Register() {
             </select>
           </div>
 
-          <button type='submit' className='btn btn-primary w-100'>
+          <button type='submit' className='btn btn-primary w-100 '>
             {response.loading ? <span>Loading...</span> : "Register"}
           </button>
         </div>

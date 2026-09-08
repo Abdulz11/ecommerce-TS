@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppContext } from "../context/appcontext";
 import { useAuthContext } from "../context/authContext";
 import { cartImage } from "../assets/images/cartImage";
 import styles from "./sideNavbar.module.css";
@@ -9,7 +8,7 @@ import { FaBars, FaTimes } from "react-icons/fa";
 function SideNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { cart } = useAppContext();
+  const [cart, setCart] = useState([]);
   const { accessToken, userInfo, setAccessToken } = useAuthContext();
   const userName = userInfo?.name || "User";
   const initials = userName

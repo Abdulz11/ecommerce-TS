@@ -1,11 +1,9 @@
 import { Card, Container, Row, Col, Button, Badge } from "react-bootstrap";
-import { useAppContext } from "../context/appcontext";
 import { cartImage } from "../assets/images/cartImage";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export default function CustomerProfile() {
-  const { addToCart, checkIfAddedToCart, cart } = useAppContext();
   const navigate = useNavigate();
 
   const recommendedItemsDemo = Array.from({ length: 6 }).map((_, i) => ({
@@ -34,7 +32,8 @@ export default function CustomerProfile() {
             <Badge bg='secondary'>Lagos, NG</Badge>
             <Badge bg='info'>Member</Badge>
             <Badge bg='light' text='dark'>
-              {cart?.length || 0} In Cart
+              {/* {cart?.length || 0} In Cart */}
+              {0} In Cart
             </Badge>
           </div>
         </Col>
@@ -73,24 +72,8 @@ export default function CustomerProfile() {
                           {p.description}
                         </Card.Text>
                         <div className='d-flex gap-2 mt-2 justify-content-end'>
-                          <Button
-                            size='sm'
-                            variant={
-                              checkIfAddedToCart(p.id)
-                                ? "success"
-                                : "outline-primary"
-                            }
-                            onClick={() =>
-                              addToCart(p.id, {
-                                id: p.id,
-                                name: p.title,
-                                price: p.price,
-                              })
-                            }
-                          >
-                            {checkIfAddedToCart(p.id)
-                              ? "In Cart"
-                              : "Add to Cart"}
+                          <Button size='sm' variant='outline-primary'>
+                            Add to cart
                           </Button>
                           <Button
                             size='sm'

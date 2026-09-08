@@ -3,7 +3,7 @@ type ProductDetail = {
   name: string;
   description: string;
   imageUrls?: string[];
-  price?: number | { raw: number; formatted_with_symbol?: string };
+  price?: number;
   currency?: string;
   quantity?: number;
   subCategory?: {
