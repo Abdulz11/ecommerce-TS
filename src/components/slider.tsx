@@ -56,10 +56,10 @@ function Slider() {
             }}
           >
             <div className='slider-img-div'></div>
-            <div className='slider-text-div'>
+            <div className='slider-text-div '>
               <h1>{eachSlide.caption}</h1>
               <p>Buy all you can possible imagine</p>
-              <button>
+              <button className=' btn btn-secondary  '>
                 <a href='#categories'>Shop now</a>
               </button>
             </div>

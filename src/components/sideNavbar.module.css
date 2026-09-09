@@ -55,6 +55,7 @@
   background: transparent;
   border: none;
   font: inherit;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;

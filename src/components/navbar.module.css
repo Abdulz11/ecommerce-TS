@@ -16,7 +16,7 @@
 
 .navLink:hover,
 .navLink:focus {
-  color: #000000;
+  color: #00000077;
 }
 
 .navLink {
@@ -29,6 +29,7 @@
   border: none;
   padding: 0;
   font: inherit;
+  font-weight: 600;
 }
 
 .cartDiv {
@@ -72,6 +73,19 @@
 
 .logoutButton {
   cursor: pointer;
+  background-color: #000000;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.logoutButton:hover {
+  /* background-color: #303131; */
+  color: rgba(128, 128, 128, 0.747);
 }
 
 @media (max-width: 700px) {

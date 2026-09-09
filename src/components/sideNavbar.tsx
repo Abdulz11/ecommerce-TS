@@ -4,11 +4,15 @@ import { useAuthContext } from "../context/authContext";
 import { cartImage } from "../assets/images/cartImage";
 import styles from "./sideNavbar.module.css";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { fetchData } from "../lib/api";
+import { useAppContext } from "../context/appContext";
 
 function SideNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const [cart, setCart] = useState([]);
+  // const { cart } = useAppContext();
+  const { cart, setCart } = useAppContext();
+  // console.log(useAppContext());
   const { accessToken, userInfo, setAccessToken } = useAuthContext();
   const userName = userInfo?.name || "User";
   const initials = userName
@@ -20,10 +24,7 @@ function SideNavbar() {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:3000/user/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+      await fetchData("/user/logout", "POST");
 
       localStorage.removeItem("accessToken");
       setAccessToken("");
@@ -102,23 +103,24 @@ function SideNavbar() {
               Upload Product
             </Link>
           )}
-
-          <Link
-            to='/cart'
-            className={styles.navLink}
-            onClick={() => setIsOpen(false)}
-          >
-            <div className={styles.cartDiv}>
-              <img
-                src={cartImage}
-                alt='shopping cart'
-                className={styles.cartImage}
-              />
-              {cart.length > 0 && (
-                <span className={styles.cartBadge}>{cart.length}</span>
-              )}
-            </div>
-          </Link>
+          {userInfo?.role == "CUSTOMER" && (
+            <Link
+              to='/cart'
+              className={styles.navLink}
+              onClick={() => setIsOpen(false)}
+            >
+              <div className={styles.cartDiv}>
+                <img
+                  src={cartImage}
+                  alt='shopping cart'
+                  className={styles.cartImage}
+                />
+                {cart.length > 0 && (
+                  <span className={styles.cartBadge}>{cart.length}</span>
+                )}
+              </div>
+            </Link>
+          )}
 
           {accessToken && (
             <div className={styles.userSection}>

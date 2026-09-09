@@ -13,7 +13,7 @@ interface ObjAuthContext {
   userInfo: UserInfo | null;
   setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | null>>;
 }
-const AuthContext = createContext({} as ObjAuthContext);
+const AuthContext = createContext<ObjAuthContext | null>(null);
 
 export const AuthContextProvider = ({
   children,
@@ -37,5 +37,9 @@ export const AuthContextProvider = ({
 };
 
 export function useAuthContext() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuthContext must be used inside AuthProvider");
+  }
+  return context;
 }

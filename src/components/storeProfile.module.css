@@ -1,0 +1,47 @@
+.header {
+  min-height: 200px;
+}
+.editBadge {
+  width: fit-content;
+
+  margin: 5px;
+  font-weight: 600;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.editBadge a {
+  text-decoration: none;
+  color: inherit;
+}
+.badge {
+  padding: 5px 10px;
+  font-weight: 600;
+
+  color: white !important;
+}
+
+.whatsappBadge {
+  border-radius: 100%;
+}
+.whatsappBadge a {
+  text-decoration: none;
+  color: inherit;
+  padding: 4px;
+}
+
+.header {
+  background-image: url("src/assets/images/black background.avif");
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 576px) {
+  .header {
+    min-height: auto;
+  }
+}

@@ -88,7 +88,7 @@ function Products() {
                 </div>
 
                 <div className={styles.productContent}>
-                  <h6 className={styles.productName}>{product?.name}</h6>
+                  <h3 className={styles.productName}>{product?.name}</h3>
 
                   <span className={styles.storeInfo}>
                     {product.tag?.length ? `${product.tag[0]}` : "Premium"}

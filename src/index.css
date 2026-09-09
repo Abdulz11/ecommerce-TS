@@ -112,6 +112,11 @@ i {
   left: 10%;
   background-color: rgb(128, 128, 128, 0.7);
 }
+
+.slider-text-div {
+  display: flex;
+  flex-direction: column;
+}
 .slider-text-div h1 {
   font-size: 100px;
   /* text-shadow: 2px 2px 5px; */

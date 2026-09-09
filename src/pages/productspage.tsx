@@ -98,6 +98,7 @@ export default function ProductsPage() {
       <div className='mb-4'>
         <Button
           variant='link'
+          style={{ color: "inherit", textDecoration: "none", fontWeight: 600 }}
           className={`${styles.backButton} p-0`}
           onClick={() => navigate(-1)}
         >
@@ -182,10 +183,7 @@ export default function ProductsPage() {
                     </Badge>
                   </div>
                 </div>
-                {product?.subCategory?.name}
-                <div className={styles.priceTag}>
-                  {formattedPrice} this price{" "}
-                </div>
+                <div className={styles.priceTag}>{formattedPrice}</div>
               </div>
 
               <p className={styles.productDescription}>

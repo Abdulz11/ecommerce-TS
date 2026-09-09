@@ -7,13 +7,15 @@ import {
   Badge,
   Modal,
 } from "react-bootstrap";
+import styles from "./storeProfile.module.css";
 import { Rings } from "react-loader-spinner";
 import { cartImage } from "../assets/images/cartImage";
 import { useNavigate } from "react-router-dom";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaBox, FaWhatsapp } from "react-icons/fa";
 
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../context/authContext";
+import { FaLocationDot, FaPencil } from "react-icons/fa6";
 
 type Product = {
   id: string;
@@ -58,9 +60,9 @@ const LoadingIcon = () => {
 const whatsappMessage = (
   product: Product & { store: { name: string; whatsapp: string } },
 ) => {
-  const message = `Hello, I'm interested in buying ${product.name} of ${product.currency} ${product.price}. Is it still available?`;
+  const message = `Hello, I'm interested in buying ${product?.name} of ${product?.currency} ${product?.price}. Is it still available?`;
 
-  return `https://wa.me/${product.store.whatsapp}?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/${product?.store?.whatsapp && 12}?text=${encodeURIComponent(message)}`;
 };
 export default function StoreProfile() {
   const { userInfo } = useAuthContext();
@@ -70,7 +72,9 @@ export default function StoreProfile() {
 
   const [showContact, setShowContact] = useState(false);
   const [showProductModal, setShowProductModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<
+    (Product & { store: { name: string; whatsapp: string } }) | null
+  >(null);
   const [storeInfo, setStoreInfo] = useState<Store | null>(null);
   const [products, setProducts] = useState<Product[] | []>([]);
   const [loadingStoreInfo, setLoadingStoreInfo] = useState(false);
@@ -137,57 +141,65 @@ export default function StoreProfile() {
 
   return (
     <Container className='profile-page my-4'>
-      <Row className='profile-header bg-light p-4 rounded align-items-center shadow-sm'>
-        <Col xs={12} md={3} className='text-center'>
+      <Row
+        className={`profile-header bg-light p-4 rounded align-items-center shadow-sm `}
+      >
+        <Col xs={12} md={12} className={`text-center ${styles.header}`}>
           <img
             src={company.avatar}
             alt='avatar'
             className='profile-avatar mb-2'
           />
+          <Badge bg='black' className={styles.editBadge}>
+            <a href={`/store/edit_profile/${storeInfo?.id || "00"}`}>
+              <FaPencil /> Edit Profile
+            </a>
+          </Badge>
         </Col>
-        <a href={`/store/edit_profile/${storeInfo?.id || "00"}`}>
-          Edit Profile
-        </a>
+
         {!loadingStoreInfo ? (
-          <Col xs={12} md={6}>
+          <Col xs={12} md={12} className='text-center'>
             <h1 className='mb-1'>{company.name}</h1>
-            <p className='text-muted mb-2 small'>
+            <p className='text-muted mb-2 small' style={{ fontWeight: 600 }}>
               {company?.description || "A store that sells items"}
             </p>
             <p className='mb-0'>
-              <a
-                // href={whatsappMessage(selectedProduct, storeInfo)}
-                // target='_blank'
-                rel='noreferrer'
-                className='ms-2 d-inline-flex align-items-center'
+              <Badge
+                bg='black'
+                className={`${styles.whatsappBadge} text-capitalize rounded-pill d-inline-flex gap-1`}
               >
-                <FaWhatsapp size={24} color='black' />
-                {storeInfo?.whatsapp || "+23481564655"}
-              </a>
+                <a
+                  href={whatsappMessage(selectedProduct!)}
+                  target='_blank'
+                  rel='noreferrer'
+                  className='ms-2 align-items-center '
+                >
+                  <FaWhatsapp size={24} color='white' />
+                  <span style={{ letterSpacing: "1px" }}>
+                    {storeInfo?.whatsapp || "+23481564655"}
+                  </span>
+                </a>
+              </Badge>
             </p>
-            <div className='d-flex gap-2 flex-wrap align-items-center'>
-              <Badge bg='secondary' className='text-capitalize'>
+            <div className='d-flex gap-2 flex-wrap align-items-center justify-content-center gap-4 mt-4  '>
+              <Badge
+                bg='black'
+                className={`${styles.badge} d-inline-flex gap-1 text-capitalize p-2`}
+              >
+                <FaLocationDot />
                 {company.location || "Lagos"}
               </Badge>
-              <Badge bg='info'>{company?.productCount} Products</Badge>
+              <Badge
+                bg='black'
+                className={`${styles.badge} text-white  text-capitalize p-2 d-inline-flex gap-1`}
+              >
+                <span>{company?.productCount} Products</span>
+              </Badge>
             </div>
           </Col>
         ) : (
           <LoadingIcon />
         )}
-
-        {/* <Col xs={12} md={3} className='text-md-end mt-3 mt-md-0'>
-          <div className='d-flex gap-2 justify-content-center justify-content-md-end'>
-            <Button
-              variant='primary'
-              onClick={() => {
-                setShowContact(true);
-              }}
-            >
-              Contact
-            </Button>
-          </div>
-        </Col> */}
       </Row>
       {/* modal */}
       <Modal show={showContact} onHide={() => setShowContact(false)} centered>
@@ -281,8 +293,11 @@ export default function StoreProfile() {
           <h2 className='mb-3'>Products</h2>
           <div className='grid-projects'>
             {loadingProducts && <LoadingIcon />}
+            {!loadingProducts && products?.length == 0 && (
+              <h3>No items in the store</h3>
+            )}
 
-            {!loadingProducts && products.length > 0 ? (
+            {!loadingProducts && products?.length > 0 && (
               <Row xs={1} sm={2} md={3} lg={4} className='g-3'>
                 {products.map((p) => (
                   <Col key={p.id}>
@@ -322,8 +337,6 @@ export default function StoreProfile() {
                   </Col>
                 ))}
               </Row>
-            ) : (
-              <h3>No items in the store</h3>
             )}
           </div>
         </Col>

@@ -32,7 +32,7 @@ export default function SignIn() {
   async function submitSignInForm(formData: FieldValues) {
     try {
       setResponse((prev) => ({ ...prev, loading: true }));
-      const res = await fetchData("user/signin", "POST", {
+      const res = await fetchData("/user/signin", "POST", {
         body: JSON.stringify(formData),
       });
       const data = await res.json();

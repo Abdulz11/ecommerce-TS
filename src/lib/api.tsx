@@ -4,12 +4,18 @@ export function fetchData(
   url: string,
   method: string = "GET",
   options?: RequestInit,
+  type: "json" | "multipart" = "json",
 ) {
+  const headers: HeadersInit = {
+    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  };
+
+  if (type == "json") {
+    headers["Content-Type"] = "application/json";
+  }
   const urlOptions = {
     method,
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    },
+    headers,
     credentials: "include" as RequestCredentials,
     ...options,
   };

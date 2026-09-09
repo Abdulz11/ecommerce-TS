@@ -5,9 +5,11 @@ import styles from "./navbar.module.css";
 import SideNavbar from "./sideNavbar";
 import NavList from "./navList";
 import { useEffect, useState } from "react";
+import { useAuthContext } from "../context/authContext";
 
 function Navbar() {
   const [mobileScreen, setMobileScreen] = useState(window.innerWidth < 500);
+  const { userInfo } = useAuthContext();
 
   useEffect(() => {
     const handleResize = () => {
@@ -23,7 +25,9 @@ function Navbar() {
     <Nav className={`container p-2 mt-3 ${styles.navRoot} `}>
       <Logo />
       {mobileScreen ? <SideNavbar /> : <NavList />}
-      <Link to='/cart' className={styles.navLink}></Link>
+      {userInfo?.role === "CUSTOMER" && (
+        <Link to='/cart' className={styles.navLink}></Link>
+      )}
     </Nav>
   );
 }

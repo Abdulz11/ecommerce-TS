@@ -1,12 +1,12 @@
 .pageWrapper {
   min-height: calc(100vh - 100px);
-  padding-bottom: 4rem;
+  padding-bottom: 3rem;
   background: #f3f3f3;
 }
 
 .productCard {
   background: white;
-  border-radius: 1.5rem;
+  border-radius: 15px;
   box-shadow: 0 22px 80px rgba(15, 23, 42, 0.08);
   overflow: hidden;
 }
@@ -120,16 +120,19 @@
 }
 
 .productDetails {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
+  padding: 1rem;
 }
 
 .productHeader {
   display: flex;
+
+  flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  flex-wrap: wrap;
 }
 
 .productTitle {
@@ -153,9 +156,9 @@
 
 .metaBadge {
   border-radius: 999px;
-  padding: 0.5rem 0.85rem;
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 0.5rem !important;
+  /* font-size: 0.8rem; */
+  font-weight: 600 !important;
   background: #f0f0f0;
   color: #000000;
 }
@@ -163,6 +166,7 @@
 .productDescription {
   color: #495057;
   line-height: 1.8;
+  font-weight: 600;
 }
 
 .productInfoGrid {
@@ -257,6 +261,12 @@
 }
 
 @media (max-width: 576px) {
+  /* .metaBadge {
+    padding: 0.5rem 0.85rem;
+  } */
+  .productDetails {
+    padding: 0.4rem;
+  }
   .productHero {
     gap: 1rem;
   }

@@ -46,6 +46,11 @@ export default function NavList() {
             Profile
           </Link>
         )}
+        {accessToken && userInfo?.role == "STORE" && (
+          <Link to='/upload' className={styles.navLink}>
+            Upload
+          </Link>
+        )}
         {accessToken && (
           <div className={`${styles.userBadgeGroup} ms-2`} title={userName}>
             <div
@@ -61,19 +66,17 @@ export default function NavList() {
             </span>
           </div>
         )}
-        {accessToken && userInfo?.role == "STORE" && (
-          <Link to='/upload' className={styles.navLink}>
-            Upload
-          </Link>
-        )}
+
         {accessToken && (
-          <button
-            type='button'
-            onClick={handleLogout}
-            className={`${styles.navLink} ${styles.logoutButton}`}
-          >
-            Logout
-          </button>
+          <div className={styles.userSection}>
+            <button
+              type='button'
+              onClick={handleLogout}
+              className={`${styles.navLink} ${styles.logoutButton}`}
+            >
+              Logout
+            </button>
+          </div>
         )}
       </div>
       {userInfo?.role === "CUSTOMER" && (

@@ -16,50 +16,53 @@ import EditProduct from "./pages/editProduct";
 import CategoryPage from "./pages/categoryPage";
 import AllCategoriesPage from "./pages/allCategoriesPage";
 import StoreProductsPage from "./pages/storeProductsPage";
+import { AppContextProvider } from "./context/appcontext";
 
 export function App() {
   return (
     <>
-      <AuthContextProvider>
-        <Routes>
-          {/* authentication pages */}
-          <Route path='/register' element={<Register />} />
-          <Route path='/signin' element={<SignIn />} />
+      <AppContextProvider>
+        <AuthContextProvider>
+          <Routes>
+            {/* authentication pages */}
+            <Route path='/register' element={<Register />} />
+            <Route path='/signin' element={<SignIn />} />
 
-          {/* rest of the app */}
-          <Route path='/' element={<AppLayout />}>
-            <Route index element={<Home />} />
-            <Route
-              path='upload'
-              element={
-                <PrivateRoute allowedRoles={["STORE"]}>
-                  <UploadProduct />
-                </PrivateRoute>
-              }
-            />
-            <Route path='profile' element={<Profile />} />
-            <Route path='/products' element={<CategoryPage />} />
-            <Route path='/products/:productId' element={<ProductsPage />} />
-            <Route
-              path='/products/store_products/:storeId/:productId'
-              element={<StoreProductsPage />}
-            />
-            <Route path='/categories' element={<AllCategoriesPage />} />
-            <Route
-              path='/store/edit_profile/:storeId'
-              element={<EditProfile />}
-            />
-            <Route
-              path='/products/edit_product/:productId'
-              element={<EditProduct />}
-            />
-            <Route path='/cart' element={<Cart />} />
-            <Route path='/confirmation' element={<Confirmation />} />
-          </Route>
+            {/* rest of the app */}
+            <Route path='/' element={<AppLayout />}>
+              <Route index element={<Home />} />
+              <Route
+                path='upload'
+                element={
+                  <PrivateRoute allowedRoles={["STORE"]}>
+                    <UploadProduct />
+                  </PrivateRoute>
+                }
+              />
+              <Route path='profile' element={<Profile />} />
+              <Route path='/products' element={<CategoryPage />} />
+              <Route path='/products/:productId' element={<ProductsPage />} />
+              <Route
+                path='/products/store_products/:storeId/:productId'
+                element={<StoreProductsPage />}
+              />
+              <Route path='/categories' element={<AllCategoriesPage />} />
+              <Route
+                path='/store/edit_profile/:storeId'
+                element={<EditProfile />}
+              />
+              <Route
+                path='/products/edit_product/:productId'
+                element={<EditProduct />}
+              />
+              <Route path='/cart' element={<Cart />} />
+              <Route path='/confirmation' element={<Confirmation />} />
+            </Route>
 
-          <Route path='*' element={<Errorpage />} />
-        </Routes>
-      </AuthContextProvider>
+            <Route path='*' element={<Errorpage />} />
+          </Routes>
+        </AuthContextProvider>
+      </AppContextProvider>
     </>
   );
 }
