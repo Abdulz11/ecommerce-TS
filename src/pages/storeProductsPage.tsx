@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppContext } from "../context/appcontext";
 import { FaArrowLeft, FaChevronRight } from "react-icons/fa";
 import { FaChevronLeft } from "react-icons/fa";
 import {
@@ -16,36 +15,13 @@ import styles from "./productspage.module.css";
 import { useAuthContext } from "../context/authContext";
 import { ProductDetail } from "../types";
 
-const dummyProduct: ProductDetail = {
-  id: "demo-123",
-  name: "Horizon Adventure Speaker",
-  description:
-    "A premium portable speaker with crisp audio, long battery life, and water-resistant housing for on-the-go listening.",
-  imageUrls: [
-    "https://images.unsplash.com/photo-1526178617479-1a9f5d6c8928?auto=format&fit=crop&w=1200&q=80",
-  ],
-  price: {
-    raw: 129.99,
-    formatted_with_symbol: "$129.99",
-  },
-  currency: "$",
-  quantity: 27,
-  subCategory: {
-    name: "Portable Speakers",
-    category: {
-      name: "Audio",
-    },
-  },
-  tag: ["Portable", "Bluetooth", "Water-resistant", "12h Battery"],
-};
-
 export default function StoreProductsPage() {
   const { storeId, productId } = useParams();
 
   const navigate = useNavigate();
   const { accessToken } = useAuthContext();
 
-  const [product, setProduct] = useState<ProductDetail | null>(dummyProduct);
+  const [product, setProduct] = useState<ProductDetail | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -112,17 +88,11 @@ export default function StoreProductsPage() {
     );
   };
 
-  const productPrice = product
-    ? typeof product.price === "number"
-      ? product.price
-      : (product.price?.raw ?? 0)
-    : 0;
+  const productPrice = product?.price ?? 0;
 
-  const formattedPrice = product
-    ? typeof product.price === "object" && product.price?.formatted_with_symbol
-      ? product.price.formatted_with_symbol
-      : `${product.currency ?? "₦"} ${productPrice.toFixed(2)}`
-    : "";
+  const formattedPrice =
+    product?.price !== undefined &&
+    `${product?.currency ?? "₦"} ${product?.price}`;
 
   return (
     <Container className={`${styles.pageWrapper} py-5`}>

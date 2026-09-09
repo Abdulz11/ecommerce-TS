@@ -1,8 +1,9 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { ProductDetail } from "../components/products";
+
 import { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { Rings } from "react-loader-spinner";
+import { ProductDetail } from "../types";
 
 export default function CategoryPage() {
   const { search } = useLocation();
