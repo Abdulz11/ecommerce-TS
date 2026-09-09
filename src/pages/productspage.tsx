@@ -73,16 +73,17 @@ export default function ProductsPage() {
 
   const currentImage = imageUrls[activeImageIndex] ?? imageUrls[0];
 
+  const isFirstImage = activeImageIndex === 0;
+  const isLastImage = activeImageIndex === imageUrls.length - 1;
+
   const showPrevImage = () => {
-    setActiveImageIndex((prevIndex) =>
-      prevIndex === 0 ? imageUrls.length - 1 : prevIndex - 1,
-    );
+    if (isFirstImage) return;
+    setActiveImageIndex((prevIndex) => prevIndex - 1);
   };
 
   const showNextImage = () => {
-    setActiveImageIndex((prevIndex) =>
-      prevIndex === imageUrls.length - 1 ? 0 : prevIndex + 1,
-    );
+    if (isLastImage) return;
+    setActiveImageIndex((prevIndex) => prevIndex + 1);
   };
 
   const productPrice = product?.price;
@@ -120,9 +121,13 @@ export default function ProductsPage() {
             <div className={styles.imagePanel}>
               <button
                 type='button'
-                className={`${styles.sliderButton} ${styles.sliderButtonPrev}`}
+                className={`${styles.sliderButton} ${styles.sliderButtonPrev} ${
+                  isFirstImage ? styles.sliderButtonDisabled : ""
+                }`}
                 onClick={showPrevImage}
+                disabled={isFirstImage}
                 aria-label='Previous image'
+                aria-disabled={isFirstImage}
               >
                 <FaChevronLeft />
               </button>
@@ -152,9 +157,13 @@ export default function ProductsPage() {
 
               <button
                 type='button'
-                className={`${styles.sliderButton} ${styles.sliderButtonNext}`}
+                className={`${styles.sliderButton} ${styles.sliderButtonNext} ${
+                  isLastImage ? styles.sliderButtonDisabled : ""
+                }`}
                 onClick={showNextImage}
+                disabled={isLastImage}
                 aria-label='Next image'
+                aria-disabled={isLastImage}
               >
                 <FaChevronRight />
               </button>
