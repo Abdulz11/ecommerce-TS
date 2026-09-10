@@ -16,7 +16,7 @@ import EditProduct from "./pages/editProduct";
 import CategoryPage from "./pages/categoryPage";
 import AllCategoriesPage from "./pages/allCategoriesPage";
 import StoreProductsPage from "./pages/storeProductsPage";
-import { AppContextProvider } from "./context/appcontext";
+import { AppContextProvider } from "./context/appContext";
 
 export function App() {
   return (
