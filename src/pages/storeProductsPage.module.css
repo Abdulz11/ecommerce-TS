@@ -1,0 +1,59 @@
+.deleteModal {
+  --bs-modal-zindex: 1055;
+}
+
+.deleteModalDialog {
+  max-width: 480px;
+  width: min(92vw, 480px);
+}
+
+.deleteModalHeader {
+  border-bottom: none;
+  padding: 1.25rem 1.25rem 0.5rem;
+}
+
+.deleteModalTitle {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.deleteModalBody {
+  padding: 0.5rem 1.25rem 1rem;
+  color: #495057;
+}
+
+.deleteModalBody p {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.deleteModalFooter {
+  border-top: none;
+  padding: 0 1.25rem 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.deleteConfirmButton,
+.deleteCancelButton {
+  min-width: 110px;
+  border-radius: 0.75rem;
+  font-weight: 600;
+}
+
+@media (max-width: 576px) {
+  .deleteModalDialog {
+    width: calc(100vw - 1.5rem);
+    margin: 0.75rem auto;
+  }
+
+  .deleteModalFooter {
+    flex-direction: column-reverse;
+  }
+
+  .deleteConfirmButton,
+  .deleteCancelButton {
+    width: 100%;
+  }
+}

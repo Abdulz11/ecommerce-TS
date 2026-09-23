@@ -32,30 +32,29 @@ export default function SignIn() {
   async function submitSignInForm(formData: FieldValues) {
     try {
       setResponse((prev) => ({ ...prev, loading: true }));
-      const res = await fetchData("/user/signin", "POST", {
+      const res = await fetchData("/store/signin", "POST", {
         body: JSON.stringify(formData),
       });
-      const data = await res.json();
-      if (!data?.success) {
-        setResponse((prev) => ({
-          ...prev,
-          error: data?.error ?? null,
-          success: false,
-          message: data?.message ?? "Sign in failed",
-          loading: false,
-        }));
-        setResponse({
-          error: data?.error ?? null,
-          data,
-          success: false,
-          message: data?.message ?? "Sign in failed",
-          loading: false,
-        });
-        setErrorModal(true);
-        return;
+      if (!res.ok) {
+        throw new Error(res.statusText);
       }
+
+      const data = await res.json();
+      // if (!data?.success) {
+      //   setResponse((prev) => ({
+      //     ...prev,
+      //     error: data?.error ?? null,
+      //     success: false,
+      //     message: data?.message ?? "Sign in failed",
+      //     loading: false,
+      //   }));
+
+      // }
+      console.log(data)
+
       sessionStorage.setItem("accessToken", data?.data.accessToken);
       sessionStorage.setItem("userInfo", JSON.stringify(data?.data.user));
+
       setAccessToken(data?.data.accessToken);
       setUserInfo(data?.data.user);
       setResponse((prev) => ({

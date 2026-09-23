@@ -70,7 +70,7 @@ function Products() {
                     className={styles.productImage}
                   />
                   <div className={styles.productOverlay}>
-                    <button
+                    {/* <button
                       className={styles.overlayButton}
                       onClick={() => handleViewProduct(product?.id)}
                       title='View details'
@@ -83,7 +83,7 @@ function Products() {
                       title='Add to cart'
                     >
                       🛒
-                    </button>
+                    </button> */}
                   </div>
                 </div>
 
@@ -96,7 +96,9 @@ function Products() {
 
                   <div className={styles.priceRow}>
                     <span className={styles.productPrice}>
-                      <span className={styles.productCurrency}>$</span>
+                      <span className={styles.productCurrency}>
+                        {product.currency}{" "}
+                      </span>
                       {product?.price?.toFixed(2)}
                     </span>
                     <span

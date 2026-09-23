@@ -39,11 +39,19 @@ export function App() {
                   </PrivateRoute>
                 }
               />
-              <Route path='profile' element={<Profile />} />
+              <Route
+                path='profile'
+                element={
+                  <PrivateRoute allowedRoles={["STORE", "CUSTOMER"]}>
+                    <Profile />
+                  </PrivateRoute>
+                }
+              />
               <Route path='/products' element={<CategoryPage />} />
               <Route path='/products/:productId' element={<ProductsPage />} />
+              {/* <Route path='store/products/:productId' element={<ProductsPage />} /> */}
               <Route
-                path='/products/store_products/:storeId/:productId'
+                path='/store/:storeId/products/:productId'
                 element={<StoreProductsPage />}
               />
               <Route path='/categories' element={<AllCategoriesPage />} />

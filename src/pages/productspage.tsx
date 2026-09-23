@@ -17,7 +17,7 @@ const whatsappMessage = (
   ) {
     return "#";
   }
-  const message = `Hello, I'm interested in buying ${product.name} of ${product.currency} ${product.price}. Is it still available?`;
+  const message = `Hello, I'm interested in buying ${product.name} of ${product.currency}${product.price}. Is it still available?`;
 
   return `https://wa.me/${product.store.whatsapp}?text=${encodeURIComponent(message)}`;
 };
@@ -200,12 +200,12 @@ export default function ProductsPage() {
               </div>
 
               <div className={styles.actionsRow}>
-                <Button
+                {/* <Button
                   variant='primary'
                   onClick={() => console.log("added to cart")}
                 >
                   Add to cart
-                </Button>
+                </Button> */}
 
                 {(
                   product as ProductDetail & {

@@ -4,12 +4,13 @@ import { useAuthContext } from "../context/authContext";
 import { cartImage } from "../assets/images/cartImage";
 import { useState } from "react";
 import { fetchData } from "../lib/api";
+import { useAppContext } from "../context/appContext";
 
 export default function NavList() {
   const navigate = useNavigate();
 
   const { accessToken, userInfo, setAccessToken } = useAuthContext();
-  const [cart, setCart] = useState([]);
+  const { cart, setCart } = useAppContext();
   const userName = userInfo?.name || "User";
   const initials = userName
     .split(" ")

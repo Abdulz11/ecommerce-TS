@@ -16,6 +16,7 @@ import { FaBox, FaWhatsapp } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../context/authContext";
 import { FaLocationDot, FaPencil } from "react-icons/fa6";
+import { fetchData, handleExpiredToken } from "../lib/api";
 
 type Product = {
   id: string;
@@ -69,7 +70,7 @@ export default function StoreProfile() {
 
   // const { addToCart, checkIfAddedToCart, setPath } = useAppContext();
   const navigate = useNavigate();
-
+  console.log(userInfo);
   const [showContact, setShowContact] = useState(false);
   const [showProductModal, setShowProductModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<
@@ -82,17 +83,45 @@ export default function StoreProfile() {
   const [errorProducts, setErrorProducts] = useState(false);
   const [errorStoreInfo, setErrorStoreInfo] = useState(false);
 
+  // fetch profile
+  useEffect(() => {
+    const fetchStoreInfo = async () => {
+      setLoadingStoreInfo(true);
+      setErrorStoreInfo(false);
+
+      try {
+        const response = await fetchData(`/store/store_info/${userInfo?.name}`);
+        // console.log(response);
+        if (!response.ok) {
+          throw new Error(response.status.toString());
+        }
+        const data = await response.json();
+        setStoreInfo(data.data);
+      } catch (err: any) {
+        console.log("Error fetching store info:", err);
+        if (err.message === "401") {
+          return handleExpiredToken(fetchStoreInfo);
+        }
+
+        setErrorStoreInfo(true);
+      } finally {
+        setLoadingStoreInfo(false);
+      }
+    };
+
+    fetchStoreInfo();
+  }, []);
+
   // fetch products
   useEffect(() => {
+    if (!storeInfo) return;
     const fetchProducts = async () => {
       setLoadingProducts(true);
       setErrorProducts(false);
       try {
-        const response = await fetch(
-          `http://localhost:3000/products/store_products/${userInfo?.id}`,
-        );
+        const response = await fetchData(`/store/${storeInfo?.id}/products`);
         const data = await response.json();
-        setProducts(data.products);
+        setProducts(data.data.products);
       } catch (error) {
         console.error("Error fetching products:", error);
         setErrorProducts(true);
@@ -102,30 +131,9 @@ export default function StoreProfile() {
     };
 
     fetchProducts();
-  }, []);
+  }, [storeInfo?.id]);
 
   // fetch store info
-  useEffect(() => {
-    const fetchStoreInfo = async () => {
-      setLoadingStoreInfo(true);
-      setErrorStoreInfo(false);
-
-      try {
-        const response = await fetch(
-          `http://localhost:3000/store/store_info/${userInfo?.id}`,
-        );
-        const data = await response.json();
-        setStoreInfo(data.data);
-      } catch (error) {
-        console.error("Error fetching store info:", error);
-        setErrorStoreInfo(true);
-      } finally {
-        setLoadingStoreInfo(false);
-      }
-    };
-
-    fetchStoreInfo();
-  }, []);
 
   const company = {
     name: storeInfo?.name
@@ -326,7 +334,9 @@ export default function StoreProfile() {
                             size='sm'
                             variant='primary'
                             onClick={() =>
-                              navigate(`/products/${userInfo?.id}/${p.id}`)
+                              navigate(
+                                `/store/${storeInfo?.id}/products/${p.id}`,
+                              )
                             }
                           >
                             View

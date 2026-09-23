@@ -1,7 +1,6 @@
 import { useContext, createContext, useState } from "react";
 
 export type UserInfo = {
-  id: string;
   name: string;
   email: string;
   role: "STORE" | "CUSTOMER";
