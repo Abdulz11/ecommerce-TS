@@ -123,7 +123,7 @@ export default function StoreProfile() {
         setProducts(data.data.products);
       } catch (err) {
         if (err instanceof Error && err.message == "Relogin") {
-          navigate("/");
+          navigate("/signin");
           return;
         }
         console.error("Error fetching products:", err);

@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL_DEV;
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export async function fetchData(
   url: string,
@@ -43,13 +43,14 @@ export const handleExpiredToken = async () => {
     credentials: "include",
   });
 
-  if (!response.ok) {
+  if (response.status == 401) {
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("userInfo");
+
     throw new Error("Relogin");
   }
 
   const data = await response.json();
-
-  sessionStorage.setItem("accessToken", data.data.accessToken);
 
   sessionStorage.setItem("accessToken", data?.data.accessToken);
   sessionStorage.setItem("userInfo", JSON.stringify(data?.data.user));

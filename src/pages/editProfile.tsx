@@ -53,7 +53,7 @@ export default function EditProfile() {
       setResponse((prev) => ({ ...prev, error: false, message: null }));
       try {
         const response = await fetch(
-          `http://localhost:3000/store/store_info/${userInfo?.id}`,
+          `http://localhost:3000/store/store_info/${userInfo?.name}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -126,7 +126,7 @@ export default function EditProfile() {
       }
 
       const res = await fetch(
-        `http://localhost:3000/store/edit_profile/${userInfo?.id}`,
+        `http://localhost:3000/store/edit_profile/${userInfo?.name}`,
         {
           method: "PUT",
           headers: {
