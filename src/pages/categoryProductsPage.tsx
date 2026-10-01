@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { Rings } from "react-loader-spinner";
 import { ProductDetail } from "../types";
+import { fetchData } from "../lib/api";
 
 export default function CategoryProductsPage() {
   const { search } = useLocation();
@@ -15,8 +16,8 @@ export default function CategoryProductsPage() {
   function getProducts() {
     setError(false);
     setLoading(true);
-    fetch(`http://localhost:3000/products${search}`)
-      .then((response) => response.json())
+    fetchData(`/products${search}`)
+      .then((response) => response)
       .then((data) => {
         if (!data.success)
           throw Error(data?.error || "Something went wrong when fetching");
