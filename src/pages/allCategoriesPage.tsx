@@ -49,7 +49,7 @@ function AllCategoriesPage() {
                   {category?.category}
                 </Card.Text>
                 <Link
-                  to={`products/?category=${encodeURIComponent(category.category)}`}
+                  to={`/products/?category=${encodeURIComponent(category.category)}`}
                 >
                   <button style={{ fontSize: "16px", fontWeight: "700" }}>
                     Shop Now

@@ -20,7 +20,7 @@ function Categories() {
   >([]);
   useEffect(() => {
     fetchData("/products/categ_and_subCateg_enums")
-      .then((response) => response.json())
+      .then((response) => response)
       .then((data) => {
         const categoriesStringArr = Object.keys(data);
         const categoriesArray = categoriesStringArr.map((value, index) => ({

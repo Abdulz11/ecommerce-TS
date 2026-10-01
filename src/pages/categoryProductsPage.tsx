@@ -5,7 +5,7 @@ import { Card } from "react-bootstrap";
 import { Rings } from "react-loader-spinner";
 import { ProductDetail } from "../types";
 
-export default function CategoryPage() {
+export default function CategoryProductsPage() {
   const { search } = useLocation();
   const navigate = useNavigate();
   const [products, setProducts] = useState<ProductDetail[]>([]);
@@ -114,7 +114,7 @@ export default function CategoryPage() {
                         marginTop: "12px",
                       }}
                     >
-                      <button className='button-hover'>Add to Cart</button>
+                      {/* <button className='button-hover'>Add to Cart</button> */}
                       <button
                         className='button-hover'
                         onClick={() => navigate(`/products/${product.id}`)}

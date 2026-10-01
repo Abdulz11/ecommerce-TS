@@ -23,7 +23,7 @@ export default function NavList() {
     try {
       await fetchData("/user/logout", "POST");
       // Remove frontend access token
-      localStorage.removeItem("accessToken");
+      sessionStorage.removeItem("accessToken");
       setAccessToken("");
       navigate("/");
       setCart([]);

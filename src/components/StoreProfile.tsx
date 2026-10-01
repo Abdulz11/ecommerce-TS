@@ -68,9 +68,8 @@ const whatsappMessage = (
 export default function StoreProfile() {
   const { userInfo } = useAuthContext();
 
-  // const { addToCart, checkIfAddedToCart, setPath } = useAppContext();
   const navigate = useNavigate();
-  console.log(userInfo);
+  // console.log(userInfo);
   const [showContact, setShowContact] = useState(false);
   const [showProductModal, setShowProductModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<
@@ -91,17 +90,17 @@ export default function StoreProfile() {
 
       try {
         const response = await fetchData(`/store/store_info/${userInfo?.name}`);
-        // console.log(response);
-        if (!response.ok) {
-          throw new Error(response.status.toString());
-        }
-        const data = await response.json();
+        const data = await response;
+        console.log(data);
+        console.log(data?.data);
         setStoreInfo(data.data);
-      } catch (err: any) {
-        console.log("Error fetching store info:", err);
-        if (err.message === "401") {
-          return handleExpiredToken(fetchStoreInfo);
+      } catch (err) {
+        if (err instanceof Error && err.message == "Relogin") {
+          navigate("/");
+          return;
         }
+
+        console.log("Error fetching store info:", err);
 
         setErrorStoreInfo(true);
       } finally {
@@ -120,10 +119,14 @@ export default function StoreProfile() {
       setErrorProducts(false);
       try {
         const response = await fetchData(`/store/${storeInfo?.id}/products`);
-        const data = await response.json();
+        const data = await response;
         setProducts(data.data.products);
-      } catch (error) {
-        console.error("Error fetching products:", error);
+      } catch (err) {
+        if (err instanceof Error && err.message == "Relogin") {
+          navigate("/");
+          return;
+        }
+        console.error("Error fetching products:", err);
         setErrorProducts(true);
       } finally {
         setLoadingProducts(false);

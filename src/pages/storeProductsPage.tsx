@@ -68,12 +68,16 @@ export default function StoreProductsPage() {
         const response = await fetchData(
           `/store/${storeId}/products/${productId}`,
         );
-        if (!response.ok) {
-          throw new Error("Unable to load product.");
-        }
+        // if (!response.ok) {
+        //   throw new Error("Unable to load product.");
+        // }
         const data = await response.json();
         setProduct(data.data || null);
       } catch (err) {
+        if (err instanceof Error && err.message == "Relogin") {
+          navigate("/");
+          return;
+        }
         setError(
           err instanceof Error
             ? err.message

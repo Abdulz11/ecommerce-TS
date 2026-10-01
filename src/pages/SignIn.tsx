@@ -35,11 +35,8 @@ export default function SignIn() {
       const res = await fetchData("/store/signin", "POST", {
         body: JSON.stringify(formData),
       });
-      if (!res.ok) {
-        throw new Error(res.statusText);
-      }
 
-      const data = await res.json();
+      const data = await res;
       // if (!data?.success) {
       //   setResponse((prev) => ({
       //     ...prev,
@@ -50,7 +47,7 @@ export default function SignIn() {
       //   }));
 
       // }
-      console.log(data)
+      console.log(data);
 
       sessionStorage.setItem("accessToken", data?.data.accessToken);
       sessionStorage.setItem("userInfo", JSON.stringify(data?.data.user));

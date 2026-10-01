@@ -13,10 +13,11 @@ import { AuthContextProvider } from "./context/authContext";
 import PrivateRoute from "./routes/PrivateRoute";
 import EditProfile from "./pages/editProfile";
 import EditProduct from "./pages/editProduct";
-import CategoryPage from "./pages/categoryPage";
+import CategoryPage from "./pages/categoryProductsPage";
 import AllCategoriesPage from "./pages/allCategoriesPage";
 import StoreProductsPage from "./pages/storeProductsPage";
 import { AppContextProvider } from "./context/appContext";
+import CategoryProductsPage from "./pages/categoryProductsPage";
 
 export function App() {
   return (
@@ -47,7 +48,7 @@ export function App() {
                   </PrivateRoute>
                 }
               />
-              <Route path='/products' element={<CategoryPage />} />
+              <Route path='/products' element={<CategoryProductsPage />} />
               <Route path='/products/:productId' element={<ProductsPage />} />
               {/* <Route path='store/products/:productId' element={<ProductsPage />} /> */}
               <Route

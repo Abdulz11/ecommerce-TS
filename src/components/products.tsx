@@ -13,7 +13,7 @@ function Products() {
   useEffect(() => {
     setLoading(true);
     fetchData("/products")
-      .then((response) => response.json())
+      .then((response) => response)
       .then((data) => {
         setProducts(data.data);
         setLoading(false);

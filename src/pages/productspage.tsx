@@ -52,10 +52,9 @@ export default function ProductsPage() {
 
       try {
         const response = await fetchData(`/products/${productId}`);
-        if (!response.ok) {
-          throw new Error("Unable to load product.");
-        }
-        const data = await response.json();
+
+        const data = await response;
+        console.log(data.data);
         setProduct(data.data);
       } catch (err) {
         setError(

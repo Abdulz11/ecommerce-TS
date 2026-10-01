@@ -25,8 +25,7 @@ function SideNavbar() {
   const handleLogout = async () => {
     try {
       await fetchData("/user/logout", "POST");
-
-      localStorage.removeItem("accessToken");
+      sessionStorage.removeItem("accessToken");
       setAccessToken("");
       setIsOpen(false);
       navigate("/");
