@@ -2,7 +2,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import Logo from "../components/logo";
 import { useAuthContext } from "../context/authContext";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./SignIn.module.css";
 import { fetchData } from "../lib/api";
 
@@ -176,7 +176,7 @@ export default function SignIn() {
         </div>
 
         <p className='text-center mt-4'>
-          Don't have account ? <a href='register'>Register</a>
+          Don't have account ? <Link to='/register'>Register</Link>
         </p>
       </form>
     </>
