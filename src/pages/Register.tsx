@@ -32,10 +32,10 @@ export default function Register() {
     try {
       setResponse((prev) => ({ ...prev, loading: true }));
 
-      const res = await fetchData(`user/registration`, "POST", {
+      const res = await fetchData(`/user/registration`, "POST", {
         body: JSON.stringify(data),
       });
-      const resData = await res.json();
+      const resData = await res;
       console.log(resData);
       if (!resData?.success) {
         setResponse((prev) => ({

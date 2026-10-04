@@ -20,6 +20,7 @@ export async function fetchData(
     credentials: "include" as RequestCredentials,
     ...options,
   };
+
   console.log(`${BASE_URL}${url}`, urlOptions);
   const response = await fetch(`${BASE_URL}${url}`, urlOptions);
 

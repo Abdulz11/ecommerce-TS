@@ -4,6 +4,14 @@
   box-sizing: border-box;
 }
 
+a a,
+a:hover,
+a:active,
+a:focus,
+a:visited {
+  color: inherit;
+}
+
 :root {
   --brand-black: #111111;
   --brand-black-strong: #000000;
