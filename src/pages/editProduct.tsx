@@ -389,8 +389,7 @@ export default function EditProduct() {
             className='upload-form'
           >
             <div className='form-notice-box'>
-              <span className='notice-icon'>ℹ️</span>
-              <span className='notice-text'>
+              <span className='notice-text' style={{ color: "red" }}>
                 <strong>*</strong> indicates required fields
               </span>
             </div>
@@ -638,9 +637,10 @@ export default function EditProduct() {
                     <input
                       id='product-quantity'
                       type='number'
-                      min='0'
+                      defaultValue='1'
+                      min='1'
                       className='form-control form-input'
-                      placeholder='0'
+                      placeholder='1'
                       {...register("quantity", { required: true })}
                     />
                   </div>

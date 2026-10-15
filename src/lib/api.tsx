@@ -28,9 +28,18 @@ export async function fetchData(
     if (response.status == 401) {
       await handleExpiredToken();
       return fetchData(url, method, options, type);
-    } else {
+    } else if (response.status == 409) {
+      const errorData = await response.json();
       throw new Error(
-        "Something went wrong when fetching.Check your connection and retry",
+        errorData.message ||
+          "Parameter has been used before. Please check your input and try again.",
+      );
+    } else {
+      const errorData = await response.json();
+      console.log(errorData);
+      throw new Error(
+        errorData.message ||
+          "Something went wrong when fetching. Check your connection and retry",
       );
     }
   }
@@ -39,7 +48,7 @@ export async function fetchData(
 }
 
 export const handleExpiredToken = async () => {
-  const response = await fetch(`${BASE_URL}/store/refresh_token`, {
+  const response = await fetch(`${BASE_URL}/user/refresh_token`, {
     method: "POST",
     credentials: "include",
   });

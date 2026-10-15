@@ -23,7 +23,7 @@ export default function StoreProductsPage() {
 
   const [deleteProduct, setDeleteProduct] = useState({} as ProductDetail);
   const navigate = useNavigate();
-  const { accessToken } = useAuthContext();
+  const [modal, setModal] = useState({ show: false, title: "", message: "" });
 
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -33,15 +33,27 @@ export default function StoreProductsPage() {
 
   const handleDelete = async (product: ProductDetail) => {
     try {
-      await fetchData(
-        `/store/${storeId}/products/${productId?.toUpperCase()} `,
+      const data = await fetchData(
+        `/store/${storeId}/products/${productId} `,
         "DELETE",
       );
-      console.log(`${product.name} has been deleted`);
       setDeleteModal(false);
+      setModal({
+        show: true,
+        title: "Product Deleted",
+        message: `${"Product has been deleted successfully"}`,
+      });
+      setTimeout(() => {
+        navigate("/profile");
+      }, 500);
     } catch (e) {
-      console.log();
-      setError(`${product.id} could not be deleted`);
+      console.log(e);
+      setModal({
+        show: true,
+        title: "Error",
+        message: e instanceof Error ? e.message : "Failed to delete product",
+      });
+      // setError(`${product.id} could not be deleted`);
     }
   };
 
@@ -68,11 +80,8 @@ export default function StoreProductsPage() {
         const response = await fetchData(
           `/store/${storeId}/products/${productId}`,
         );
-        // if (!response.ok) {
-        //   throw new Error("Unable to load product.");
-        // }
-        const data = await response.json();
-        setProduct(data.data || null);
+
+        setProduct(response.data || null);
       } catch (err) {
         if (err instanceof Error && err.message == "Relogin") {
           navigate("/");
@@ -137,6 +146,22 @@ export default function StoreProductsPage() {
           </Button>
         </Modal.Footer>
       </Modal>
+      {modal.show && (
+        <Modal
+          show={modal.show}
+          onHide={() => setModal({ ...modal, show: false })}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title style={{ color: "red" }}>{modal.title}</Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body className='fs-5 fw-semibold text-center'>
+            {modal.message}
+          </Modal.Body>
+        </Modal>
+      )}
+
       <Container className={`${styles.pageWrapper} py-5`}>
         <div className='mb-4'>
           <Button

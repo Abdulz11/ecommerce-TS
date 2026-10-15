@@ -1,7 +1,7 @@
 import { FieldValues, useForm } from "react-hook-form";
 import Logo from "../components/logo";
 import styles from "./Register.module.css";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchData } from "../lib/api";
 
@@ -15,7 +15,7 @@ type responseObject = {
 
 export default function Register() {
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch } = useForm();
   const [response, setResponse] = useState<responseObject>({
     error: null,
     data: null,
@@ -26,7 +26,7 @@ export default function Register() {
 
   const [modal, setModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
-  // const { setAccessToken } = useAuthContext();
+  const role = watch("role");
 
   async function submitRegisterForm(data: FieldValues) {
     try {
@@ -64,7 +64,7 @@ export default function Register() {
         ...prev,
         loading: false,
         success: false,
-        error: e ?? String(e),
+        error: e?.message || "Something went wrong",
       }));
       setErrorModal(true);
     }
@@ -124,6 +124,20 @@ export default function Register() {
 
         <div className={styles.registrationContainer}>
           <div className='mb-3'>
+            <label htmlFor='role' className='form-label'>
+              Role
+            </label>
+            <select
+              id='role'
+              className='form-select'
+              {...register("role", { required: true })}
+              defaultValue={"CUSTOMER"}
+            >
+              <option value='CUSTOMER'>Customer</option>
+              <option value='STORE'>Store</option>
+            </select>
+          </div>
+          <div className='mb-3'>
             <label htmlFor='name' className='form-label'>
               Name <span className='text-danger'>*</span>
             </label>
@@ -131,7 +145,7 @@ export default function Register() {
               id='name'
               type='text'
               className='form-control'
-              placeholder='Name / Company'
+              placeholder={role == "STORE" ? "Company" : "Name"}
               required
               {...register("name", { required: true })}
             />
@@ -164,61 +178,50 @@ export default function Register() {
               {...register("password", { required: true })}
             />
           </div>
+          {role == "STORE" && (
+            <div className='mb-3'>
+              <label htmlFor='location' className='form-label'>
+                Location
+              </label>
+              <input
+                id='location'
+                type='text'
+                className='form-control'
+                placeholder='Location'
+                {...register("location")}
+              />
+            </div>
+          )}
 
-          <div className='mb-3'>
-            <label htmlFor='location' className='form-label'>
-              Location
-            </label>
-            <input
-              id='location'
-              type='text'
-              className='form-control'
-              placeholder='Location'
-              {...register("location")}
-            />
-          </div>
-
-          <div className='mb-3'>
-            <label htmlFor='description' className='form-label'>
-              Description
-            </label>
-            <input
-              id='description'
-              type='text'
-              className='form-control'
-              placeholder='Description'
-              {...register("description")}
-            />
-          </div>
-
-          <div className='mb-3'>
-            <label htmlFor='whatsapp' className='form-label'>
-              WhatsApp Number <span className='text-danger'>*</span>
-            </label>
-            <input
-              id='whatsapp'
-              type='tel'
-              className='form-control'
-              placeholder='+1234567890 (include country code)'
-              required
-              {...register("whatsapp", { required: true })}
-            />
-          </div>
-
-          <div className='mb-3'>
-            <label htmlFor='role' className='form-label'>
-              Role
-            </label>
-            <select
-              id='role'
-              className='form-select'
-              {...register("role", { required: true })}
-              defaultValue={"CUSTOMER"}
-            >
-              <option value='CUSTOMER'>Customer</option>
-              <option value='STORE'>Store</option>
-            </select>
-          </div>
+          {role == "STORE" && (
+            <div className='mb-3'>
+              <label htmlFor='description' className='form-label'>
+                Description
+              </label>
+              <input
+                id='description'
+                type='text'
+                className='form-control'
+                placeholder='Description'
+                {...register("description")}
+              />
+            </div>
+          )}
+          {role == "STORE" && (
+            <div className='mb-3'>
+              <label htmlFor='whatsapp' className='form-label'>
+                WhatsApp Number <span className='text-danger'>*</span>
+              </label>
+              <input
+                id='whatsapp'
+                type='tel'
+                className='form-control'
+                placeholder='+1234567890 (include country code)'
+                required
+                {...register("whatsapp", { required: true })}
+              />
+            </div>
+          )}
 
           <button type='submit' className='btn btn-primary w-100 '>
             {response.loading ? <span>Loading...</span> : "Register"}

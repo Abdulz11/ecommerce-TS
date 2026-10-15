@@ -1,13 +1,18 @@
 import { useForm } from "react-hook-form";
+import { Modal, Button } from "react-bootstrap";
 import "./uploadProduct.css";
 import { useAuthContext } from "../context/authContext";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { fetchData } from "../lib/api";
+import { useNavigate } from "react-router-dom";
+const BASE_URL = import.meta.env.VITE_API_URL;
 export default function UploadProduct() {
+  const navigate = useNavigate();
   type ProductForm = {
     name: string;
     description: string;
     category: string;
+    subcategory: string;
     tag: string[];
     price: string;
     currency: string;
@@ -15,18 +20,28 @@ export default function UploadProduct() {
     images: FileList;
   };
 
-  const { accessToken } = useAuthContext();
-  const { register, handleSubmit, setValue } = useForm<ProductForm>({
+  type Categories = {
+    [key: string]: string[];
+  };
+  // const { accessToken } = useAuthContext();
+  const { register, handleSubmit, setValue, watch } = useForm<ProductForm>({
     defaultValues: {
       tag: [],
     },
   });
+
   const [tagInput, setTagInput] = useState("");
+  const [categories, setCategories] = useState<Categories | null>(null);
+
   const [tags, setTags] = useState<string[]>([]);
+
+  const [modal, setModal] = useState({ show: false, title: "", message: "" });
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [selectedImagePreviews, setSelectedImagePreviews] = useState<string[]>(
     [],
   );
+
+  const category = watch("category");
 
   const addTag = () => {
     const trimmedTag = tagInput.trim();
@@ -84,21 +99,18 @@ export default function UploadProduct() {
     const updatedPreviews = selectedImagePreviews.filter((_, i) => i !== index);
     setSelectedImages(updatedFiles);
     setSelectedImagePreviews(updatedPreviews);
-    // react-hook-form: cannot directly create FileList easily; skip syncing
   };
 
   const submitUserData = async (form: ProductForm) => {
-    if (tags.length === 0) {
-      window.alert("Please add at least one tag before uploading the product.");
-      return;
-    }
-
     const formData = new FormData();
 
     formData.append("name", form.name);
     formData.append("description", form.description);
     formData.append("category", form.category);
-    tags.forEach((tag) => formData.append("tag", tag));
+    formData.append("subcategory", form.subcategory);
+    tags.length > 0
+      ? tags.forEach((tag) => formData.append("tag", tag))
+      : formData.append("tag", "");
     formData.append("price", form.price);
     formData.append("currency", form.currency);
     formData.append("quantity", form.quantity);
@@ -109,18 +121,79 @@ export default function UploadProduct() {
     filesToUpload.forEach((file: File) => {
       formData.append("images", file);
     });
+    try {
+      const data = await fetchData(
+        "/products/post_product",
+        "POST",
+        {
+          body: formData,
+        },
+        "multipart",
+      );
 
-    await fetch("http://localhost:3000/products/post_product", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: formData,
-    });
+      setModal({
+        show: true,
+        title: "Success",
+        message:
+          data.message ||
+          "Something went wrong when uploading product.Try again later",
+      });
+      setTimeout(() => {
+        navigate("/profile");
+      }, 500);
+    } catch (e) {
+      console.log(e);
+      if (e instanceof Error) {
+        if (e.message == "Relogin") {
+          navigate("/signin");
+        }
+        setModal({
+          show: true,
+          title: "Error",
+          message:
+            e.message ||
+            "Something went wrong when uploading product.Try again later",
+        });
+      }
+    }
   };
+
+  useEffect(() => {
+    async function fetchCategories() {
+      const res = await fetch(`${BASE_URL}/products/categ_and_subCateg_enums`);
+      const data = await res.json();
+
+      setCategories(data);
+    }
+    fetchCategories();
+  }, []);
 
   return (
     <div className='upload-page-container'>
+      <Modal
+        show={modal.show}
+        onHide={() => setModal({ show: false, title: "", message: "" })}
+        centered
+        backdrop='static'
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>{modal.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className='mb-0'>
+            {modal.message || "Something went wrong. Please try again."}
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant='danger'
+            onClick={() => setModal({ show: false, title: "", message: "" })}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <div className='upload-card'>
         <div className='upload-header-section'>
           <h1 className='upload-title'>📦 Add New Product</h1>
@@ -131,8 +204,7 @@ export default function UploadProduct() {
 
         <form onSubmit={handleSubmit(submitUserData)} className='upload-form'>
           <div className='form-notice-box'>
-            <span className='notice-icon'>ℹ️</span>
-            <span className='notice-text'>
+            <span className='notice-text' style={{ color: "red" }}>
               <strong>*</strong> indicates required fields
             </span>
           </div>
@@ -141,9 +213,6 @@ export default function UploadProduct() {
           <section className='form-section'>
             <div className='section-header'>
               <h2 className='section-title'>📝 Basic Information</h2>
-              <p className='section-description'>
-                Product name and detailed description
-              </p>
             </div>
 
             <div className='form-group'>
@@ -201,9 +270,38 @@ export default function UploadProduct() {
                     <option value='' disabled>
                       Select a category
                     </option>
-                    <option value='clothes'>👕 Clothes</option>
-                    <option value='kitchenware'>🍳 Kitchen Ware</option>
-                    <option value='devices'>📱 Devices</option>
+                    {categories &&
+                      Object.keys(categories).map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className='form-row'>
+              <div className='form-col'>
+                <div className='form-group'>
+                  <label htmlFor='product-subcategory' className='form-label'>
+                    Subcategory <span className='required-star'>*</span>
+                  </label>
+                  <select
+                    id='product-subcategory'
+                    className='form-control form-input'
+                    defaultValue=''
+                    {...register("subcategory", { required: true })}
+                  >
+                    <option value='' disabled>
+                      Select a subcategory
+                    </option>
+                    {categories &&
+                      category &&
+                      categories[category]?.map((subCategory) => (
+                        <option key={subCategory} value={subCategory}>
+                          {subCategory}
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>
@@ -211,7 +309,7 @@ export default function UploadProduct() {
               <div className='form-col'>
                 <div className='form-group'>
                   <label htmlFor='product-tag' className='form-label'>
-                    Tag <span className='required-star'>*</span>
+                    Tag
                   </label>
                   <div style={{ display: "flex", gap: "8px" }}>
                     <input
@@ -322,11 +420,11 @@ export default function UploadProduct() {
                   <select
                     id='product-currency'
                     className='form-control form-input'
-                    defaultValue='usd'
+                    defaultValue='₦'
                     {...register("currency", { required: true })}
                   >
-                    <option value='usd'>USD ($)</option>
-                    <option value='naira'>Naira (₦)</option>
+                    <option value='₦'>Naira (₦)</option>
+                    <option value='$'>USD ($)</option>
                   </select>
                 </div>
               </div>

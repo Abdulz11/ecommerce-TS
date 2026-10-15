@@ -60,7 +60,7 @@ export default function NavList() {
               {initials}
             </div>
             <span className='ms-2 text-muted small d-none d-sm-inline'>
-              Welcome, {userName}
+              Welcome, {userName[0].toUpperCase() + userName.slice(1)}
             </span>
             <span className='ms-2 text-muted small d-inline d-sm-none'>
               Hi, {initials}
@@ -80,7 +80,7 @@ export default function NavList() {
           </div>
         )}
       </div>
-      {userInfo?.role === "CUSTOMER" && (
+      {/* {userInfo?.role === "CUSTOMER" && (
         <div className={styles.cartDiv}>
           <img
             src={cartImage}
@@ -91,7 +91,7 @@ export default function NavList() {
             <span className={styles.cartBadge}>{cart.length}</span>
           ) : null}
         </div>
-      )}
+      )} */}
     </>
   );
 }

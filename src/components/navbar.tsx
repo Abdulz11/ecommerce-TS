@@ -25,9 +25,11 @@ function Navbar() {
     <Nav className={`container p-2 mt-3 ${styles.navRoot} `}>
       <Logo />
       {mobileScreen ? <SideNavbar /> : <NavList />}
-      {userInfo?.role === "CUSTOMER" && (
-        <Link to='/cart' className={styles.navLink}></Link>
-      )}
+      {/* {userInfo?.role === "CUSTOMER" && (
+        <Link to='/cart' className={styles.navLink}>
+          press
+        </Link>
+      )} */}
     </Nav>
   );
 }

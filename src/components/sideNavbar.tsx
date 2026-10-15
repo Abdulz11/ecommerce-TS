@@ -83,7 +83,7 @@ function SideNavbar() {
             </Link>
           )}
 
-          {accessToken && (
+          {accessToken && userInfo?.role === "STORE" && (
             <Link
               to='/profile'
               className={styles.navLink}
@@ -102,7 +102,7 @@ function SideNavbar() {
               Upload Product
             </Link>
           )}
-          {userInfo?.role == "CUSTOMER" && (
+          {/* {userInfo?.role == "CUSTOMER" && (
             <Link
               to='/cart'
               className={styles.navLink}
@@ -119,14 +119,16 @@ function SideNavbar() {
                 )}
               </div>
             </Link>
-          )}
+          )} */}
 
           {accessToken && (
             <div className={styles.userSection}>
               <div className={styles.userBadge}>
                 <div className={styles.userAvatar}>{initials}</div>
                 <div>
-                  <p className={styles.userName}>{userName}</p>
+                  <p className={styles.userName}>
+                    {userName[0].toUpperCase() + userName.slice(1)}
+                  </p>
                 </div>
               </div>
               <button

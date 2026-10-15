@@ -7,6 +7,18 @@ import styles from "./productspage.module.css";
 import { ProductDetail, ProfileData } from "../types";
 import { fetchData } from "../lib/api";
 
+const addToViewedProducts = async (productId: string) => {
+  try {
+    await fetchData(`/user/viewed_products/${productId}`, "POST").then(
+      (response) => {
+        console.log("Added to viewed products:", response);
+      },
+    );
+  } catch (error) {
+    console.error("Failed to add product to viewed products:", error);
+  }
+};
+
 const whatsappMessage = (
   product: ProductDetail & { store: { whatsapp: string } },
 ) => {
@@ -54,7 +66,7 @@ export default function ProductsPage() {
         const response = await fetchData(`/products/${productId}`);
 
         const data = await response;
-        console.log(data.data);
+
         setProduct(data.data);
       } catch (err) {
         setError(
@@ -199,13 +211,6 @@ export default function ProductsPage() {
               </div>
 
               <div className={styles.actionsRow}>
-                {/* <Button
-                  variant='primary'
-                  onClick={() => console.log("added to cart")}
-                >
-                  Add to cart
-                </Button> */}
-
                 {(
                   product as ProductDetail & {
                     store: {
@@ -214,12 +219,7 @@ export default function ProductsPage() {
                   }
                 ).store.whatsapp ? (
                   <>
-                    <Button
-                      variant='outline-secondary'
-                      onClick={() =>
-                        window.scrollTo({ top: 0, behavior: "smooth" })
-                      }
-                    >
+                    <Button variant='outline-secondary'>
                       <a
                         href={whatsappMessage(
                           product as ProductDetail & {
@@ -228,8 +228,12 @@ export default function ProductsPage() {
                             };
                           },
                         )}
+                        onClick={() => {
+                          void addToViewedProducts(product.id);
+                        }}
                         target='_blank'
                         rel='noreferrer'
+                        style={{ width: "100%", display: "block" }}
                       >
                         <FaWhatsapp color='black' size={30} />
                       </a>

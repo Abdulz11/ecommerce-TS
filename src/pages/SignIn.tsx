@@ -32,21 +32,12 @@ export default function SignIn() {
   async function submitSignInForm(formData: FieldValues) {
     try {
       setResponse((prev) => ({ ...prev, loading: true }));
-      const res = await fetchData("/store/signin", "POST", {
+      const res = await fetchData("/user/signin", "POST", {
         body: JSON.stringify(formData),
       });
 
       const data = await res;
-      // if (!data?.success) {
-      //   setResponse((prev) => ({
-      //     ...prev,
-      //     error: data?.error ?? null,
-      //     success: false,
-      //     message: data?.message ?? "Sign in failed",
-      //     loading: false,
-      //   }));
 
-      // }
       console.log(data);
 
       sessionStorage.setItem("accessToken", data?.data.accessToken);
@@ -128,6 +119,21 @@ export default function SignIn() {
         <h2 className='text-center mb-4'>Sign In</h2>
         <p className='text-danger text-center mb-4'>* fields are required</p>
 
+        <div className='mb-3'>
+          <label htmlFor='role' className='form-label'>
+            Role
+          </label>
+          <select
+            id='role'
+            className='form-select'
+            {...register("role", { required: true })}
+            defaultValue={"CUSTOMER"}
+          >
+            <option value='CUSTOMER'>Customer</option>
+            <option value='STORE'>Store</option>
+          </select>
+        </div>
+
         <div className={styles.signInContainer}>
           <div className='mb-3'>
             <label htmlFor='email' className='form-label'>
@@ -153,21 +159,6 @@ export default function SignIn() {
               placeholder='Password'
               {...register("password", { required: true })}
             />
-          </div>
-
-          <div className='mb-3'>
-            <label htmlFor='role' className='form-label'>
-              Role
-            </label>
-            <select
-              id='role'
-              className='form-select'
-              {...register("role", { required: true })}
-              defaultValue={"CUSTOMER"}
-            >
-              <option value='CUSTOMER'>Customer</option>
-              <option value='STORE'>Store</option>
-            </select>
           </div>
 
           <button type='submit' className='btn btn-primary w-100'>

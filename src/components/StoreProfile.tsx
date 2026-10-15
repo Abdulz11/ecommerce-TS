@@ -256,7 +256,10 @@ export default function StoreProfile() {
             <div className='d-flex flex-column flex-md-row gap-3'>
               <div className='text-center' style={{ flex: "0 0 320px" }}>
                 <img
-                  src={selectedProduct.imageUrls?.[0]}
+                  src={
+                    selectedProduct.imageUrls?.[0] ||
+                    "https://via.placeholder.com/800x600?text=No+Image"
+                  }
                   alt={selectedProduct.name}
                   style={{ width: "100%", height: 260, objectFit: "cover" }}
                   className='rounded'
@@ -316,7 +319,10 @@ export default function StoreProfile() {
                       <div style={{ height: 180, overflow: "hidden" }}>
                         <Card.Img
                           variant='top'
-                          src={p.imageUrls?.[0]}
+                          src={
+                            p.imageUrls?.[0] ||
+                            "https://via.placeholder.com/800x600?text=No+Image"
+                          }
                           style={{ height: "100%", objectFit: "cover" }}
                         />
                       </div>

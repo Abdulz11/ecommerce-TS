@@ -28,12 +28,14 @@
 }
 .whatsappBadge a {
   text-decoration: none;
+  display: block;
+  width: 100%;
   color: inherit;
   padding: 4px;
 }
 
 .header {
-  background-image: url("src/assets/images/black background.avif");
+  background-image: url("../assets/images/black background.avif");
   position: relative;
   background-size: cover;
   background-position: center;
