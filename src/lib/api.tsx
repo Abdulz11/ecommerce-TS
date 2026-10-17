@@ -61,7 +61,6 @@ export const handleExpiredToken = async () => {
   }
 
   const data = await response.json();
-
   sessionStorage.setItem("accessToken", data?.data.accessToken);
   sessionStorage.setItem("userInfo", JSON.stringify(data?.data.user));
 };

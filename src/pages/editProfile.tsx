@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./SignIn.module.css";
 import { FaTimes } from "react-icons/fa";
 import { ProfileData } from "../types";
+import { fetchData } from "../lib/api";
 
 type responseObject = {
   error: string | null | boolean;
@@ -23,10 +24,10 @@ const Loader = () => {
   );
 };
 export default function EditProfile() {
-  const { register, handleSubmit, reset } = useForm();
-
-  const { userInfo, setUserInfo, accessToken } = useAuthContext();
   const navigate = useNavigate();
+
+  const { register, handleSubmit, reset } = useForm();
+  const { userInfo, setUserInfo, accessToken } = useAuthContext();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageLoading, setImageLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -52,16 +53,10 @@ export default function EditProfile() {
       setResponse((prev) => ({ ...prev, loading: true }));
       setResponse((prev) => ({ ...prev, error: false, message: null }));
       try {
-        const response = await fetch(
-          `http://localhost:3000/store/store_info/${userInfo?.name}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        );
-        const data = await response.json();
-        setStoreInfo(data.data);
+        const response = await fetchData(`/store/store_info/${userInfo?.name}`);
+        // const data = await response.json();
+        console.log(response);
+        setStoreInfo(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
         setResponse((prev) => ({ ...prev, error: true }));
