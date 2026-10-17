@@ -122,6 +122,10 @@ export default function EditProfile() {
       const res = await fetchData(
         `/store/edit_profile/${userInfo?.name}`,
         "PUT",
+        {
+          body: formDataToSend,
+        },
+        "multipart",
       );
 
       console.log(res);
