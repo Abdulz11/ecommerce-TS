@@ -162,7 +162,7 @@ export default function StoreProfile() {
             className='profile-avatar mb-2'
           />
           <Badge bg='black' className={styles.editBadge}>
-            <a href={`/store/edit_profile/${storeInfo?.id || "00"}`}>
+            <a href={`/store/edit_profile/${storeInfo?.name || "storeName"}`}>
               <FaPencil /> Edit Profile
             </a>
           </Badge>

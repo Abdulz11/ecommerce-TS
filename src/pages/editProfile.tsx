@@ -54,8 +54,7 @@ export default function EditProfile() {
       setResponse((prev) => ({ ...prev, error: false, message: null }));
       try {
         const response = await fetchData(`/store/store_info/${userInfo?.name}`);
-        // const data = await response.json();
-        console.log(response);
+
         setStoreInfo(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -120,26 +119,19 @@ export default function EditProfile() {
         formDataToSend.append("img", imageFile);
       }
 
-      const res = await fetch(
-        `http://localhost:3000/store/edit_profile/${userInfo?.name}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: formDataToSend,
-          credentials: "include",
-        },
+      const res = await fetchData(
+        `/store/edit_profile/${userInfo?.name}`,
+        "PUT",
       );
 
-      const data = await res.json();
+      console.log(res);
 
-      if (!data?.success) {
+      if (!res?.success) {
         setResponse((prev) => ({
           ...prev,
-          error: data?.error ?? null,
+          error: res?.error ?? null,
           success: false,
-          message: data?.message ?? "Failed to update profile",
+          message: res?.message ?? "Failed to update profile",
           loading: false,
         }));
         setErrorModal(true);
@@ -147,14 +139,14 @@ export default function EditProfile() {
       }
 
       // Update user info in context
-      setUserInfo((prev) => ({ ...prev, name: data?.data }) as UserInfo);
+      setUserInfo((prev) => ({ ...prev, name: res?.data }) as UserInfo);
       sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
 
       setResponse((prev) => ({
         ...prev,
         error: null,
         success: true,
-        message: data?.message ?? "Profile updated successfully",
+        message: res?.message ?? "Profile updated successfully",
         loading: false,
       }));
       setModal(true);

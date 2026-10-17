@@ -57,7 +57,7 @@ export function App() {
               />
               <Route path='/categories' element={<AllCategoriesPage />} />
               <Route
-                path='/store/edit_profile/:storeId'
+                path='/store/edit_profile/:storeName'
                 element={<EditProfile />}
               />
               <Route
