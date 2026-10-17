@@ -10,7 +10,7 @@ import {
 import styles from "./storeProfile.module.css";
 import { Rings } from "react-loader-spinner";
 import { cartImage } from "../assets/images/cartImage";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaBox, FaWhatsapp } from "react-icons/fa";
 
 import { useEffect, useState } from "react";
@@ -162,9 +162,9 @@ export default function StoreProfile() {
             className='profile-avatar mb-2'
           />
           <Badge bg='black' className={styles.editBadge}>
-            <a href={`/store/edit_profile/${storeInfo?.name || "storeName"}`}>
+            <Link to={`/store/edit_profile/${storeInfo?.name || "storeName"}`}>
               <FaPencil /> Edit Profile
-            </a>
+            </Link>
           </Badge>
         </Col>
 
